@@ -3,12 +3,10 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
   email: String,
-  password: String,
+  spotifyId: String,
   accessToken: String,
   refreshToken: String,
-  uid: String,
-  password: String,
-  password_salt: String
+  isTutorialComplete: Boolean
 });
 
 const User = mongoose.model('User', userSchema);
