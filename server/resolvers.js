@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 
 const User = require('../db/User')
 const Session = require('../db/Session')
+const Song = require('../db/Song')
 
 const resolvers = {
   Query: {
@@ -13,6 +14,10 @@ const resolvers = {
       const uid = session.user;
       const foundUser = await User.findOne({uid}).exec();
       return { email: foundUser.email, uid, token }
+    },
+    matchingSong: async(_, { value }) => {
+      const song = await Song.find({ emoIndex: { $lte: value }}).sort({ratio: -1}).limit(1).exec();
+      return song[0];
     }
   },
   Mutation: {

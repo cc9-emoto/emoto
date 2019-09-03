@@ -5,9 +5,13 @@ const typeDefs = gql`
     uid: String
     token: String
   }
+  type Song {
+    songId: String
+  }
 
   type Query {
     user(token: String): User
+    matchingSong(value: Float): Song
   }
 
   type Mutation {
