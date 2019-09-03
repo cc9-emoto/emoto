@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import WebcamCapture from "./WebcamCapture";
+import '../styles/Webcam.scss'
 
 //The component which send image data to Azure to get info
 class Recognition extends Component {
@@ -18,7 +19,7 @@ class Recognition extends Component {
   //create blob for sending data to azure
   makeblob = function(baseData) {
     const BASE64_MARKER = ";base64,";
-    if (baseData.indexOf(BASE64_MARKER) == -1) {
+    if (baseData.indexOf(BASE64_MARKER) === -1) {
       const parts = baseData.split(",");
       const contentType = parts[0].split(":")[1];
       const raw = decodeURIComponent(parts[1]);
@@ -90,12 +91,12 @@ class Recognition extends Component {
   getCaptureImage = async webCamData => {
     await this.makeblob(webCamData);
     await this.submitData();
+    console.log(this.state.responseFromAPI);
   };
 
-  timerSend = async () => {};
   render() {
     return (
-      <div>
+      <div className="webcam__wrapper">
         <WebcamCapture getCaptureImage={this.getCaptureImage}></WebcamCapture>
       </div>
     );
