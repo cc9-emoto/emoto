@@ -39,26 +39,31 @@ spotifyRouter.get("/callback", (req, res) => {
     const userData = await spotifyApi.getMe();
     // const tokenExpirationEpoch = (new Date().getTime() / 1000) + data.body['expires_in'];
 
-    const newUser = await new User({
-      email: userData.body['email'], 
-      spotifyId: userData.body['id'],
-      refreshToken: data.body['refresh_token'],
-      accessToken: data.body['access_token']
-    })
-    newUser.save();
-
-    const topTrackData = await spotifyApi.getMyTopTracks({limit: 50});
-    const topTrackIds = topTrackData.body.items.map((song)=>song.id);
-    const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(topTrackIds);
-
-    for (const song of musicFeatures.body["audio_features"]) {
-      const { valence, mode, energy, id } = song
-      const newSong = await new Song({ 
-        userId: newUser.spotifyId,
-        songId: id, 
-        emoIndex: calculateEmoIndex({valence, mode, energy })
+    // Check if we can find user's spotifyId first
+    const foundUser = await User.findOne({spotifyId: userData.body['id']}).exec();
+    if (foundUser === null) {
+      const newUser = await new User({
+        email: userData.body['email'], 
+        spotifyId: userData.body['id'],
+        refreshToken: data.body['refresh_token'],
+        accessToken: data.body['access_token']
       })
-      newSong.save();
+      newUser.save();
+
+      const topTrackData = await spotifyApi.getMyTopTracks({limit: 50});
+      const topTrackIds = topTrackData.body.items.map((song)=>song.id);
+      const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(topTrackIds);
+
+      console.log(musicFeatures.body["audio_features"]);
+      for (const song of musicFeatures.body["audio_features"]) {
+        const { valence, mode, energy, id } = song
+        const newSong = await new Song({ 
+          userId: newUser.spotifyId,
+          songId: id, 
+          emoIndex: calculateEmoIndex({valence, mode, energy })
+        })
+        newSong.save();
+      }
     }
 
   }, function(err) {
