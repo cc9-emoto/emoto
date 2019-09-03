@@ -1,11 +1,10 @@
-import React from "react";
-import Recognition from "./Recognition";
+import React from 'react';
+import Login from './components/Login'
 
 const App = () => {
   return (
     <div className="app">
-      <h1>Test</h1>
-      <Recognition></Recognition>
+      <Login />
     </div>
   );
 };
