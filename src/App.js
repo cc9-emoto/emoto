@@ -1,13 +1,19 @@
 import React from "react";
-import Login from "./components/Login";
-import Recognition from "./components/Recognition";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
+import "./styles/Reset.scss";
+import "./styles/App.scss";
+import Index from "./pages/Index.js";
+import Dashboard from "./pages/Dashboard.js";
+import Onboarding from "./pages/Onboarding.js";
 
 const App = () => {
   return (
-    <div className="app">
-      <Login />
-      <Recognition />
-    </div>
+    <Router>
+      <Route path="/" exact component={Index} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/onboarding" component={Onboarding} />
+    </Router>
   );
 };
 

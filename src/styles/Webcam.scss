@@ -1,0 +1,11 @@
+.webcam__wrapper {
+  height: 250px;
+  width: 250px;
+  display: flex;
+  align-items: center;
+  border-radius: 250px;
+  overflow: hidden;
+  video {
+    margin-left: -110px;
+  }
+}

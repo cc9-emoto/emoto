@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import axios from "axios";
 import WebcamCapture from "./WebcamCapture";
+import '../styles/Webcam.scss'
 
 //The component which send image data to Azure to get info
 class Recognition extends Component {
-  constructor(prop) {
-    super(prop);
+  constructor(props) {
+    super(props);
     this.state = {
       photo: "",
       sendData: "",
@@ -18,13 +19,12 @@ class Recognition extends Component {
   //create blob for sending data to azure
   makeblob = function(baseData) {
     const BASE64_MARKER = ";base64,";
-    // if (baseData.indexOf(BASE64_MARKER) === -1) {
-    //   const parts = baseData.split(",");
-    //   const contentType = parts[0].split(":")[1];
-    //   const raw = decodeURIComponent(parts[1]);
-    //   console.log("line25, it works?");
-    //   return new Blob([raw], { type: contentType });
-    // }
+    if (baseData.indexOf(BASE64_MARKER) === -1) {
+      const parts = baseData.split(",");
+      const contentType = parts[0].split(":")[1];
+      const raw = decodeURIComponent(parts[1]);
+      return new Blob([raw], { type: contentType });
+    }
     const parts = baseData.split(BASE64_MARKER);
     const contentType = parts[0].split(":")[1];
     const raw = window.atob(parts[1]);
@@ -34,42 +34,44 @@ class Recognition extends Component {
     for (let i = 0; i < rawLength; ++i) {
       uInt8Array[i] = raw.charCodeAt(i);
     }
-    // const blobData = new Blob([uInt8Array], {
-    //   type: contentType,
-    //   encoding: "utf-8"
-    // });
-
-    const file = new File([uInt8Array], "image", { type: contentType });
-
-    this.setState({ sendData: file });
-    // const image = new Promise((resolve, reject) => {
-    //   const fr = new FileReader();
-    //   fr.onload = resolve; // CHANGE to whatever function you want which would eventually call resolve
-    //   fr.readAsDataURL(blobData);
-    // });
-    // image.then(res => {
-    //   console.log(res.currentTarget.result);
-    // });
-    // this.setState({
-    //   sendData: image
-    // });
+    this.setState({
+      sendData: new Blob([uInt8Array], { type: contentType })
+    });
   };
 
   //submit to Azure API with params
-  submitData = base64 => {
-    // const subscriptionKey = process.env.REACT_APP_AZURE_API_KEY;
-    // const config = {
-    //   "Content-Type": "application/octet-stream",
-    //   "Ocp-Apim-Subscription-Key": subscriptionKey
-    // };
+  submitData = () => {
+    const subscriptionKey = process.env.REACT_APP_AZURE_API_KEY;
+    const uriBase =
+      "https://emoto.cognitiveservices.azure.com/face/v1.0/detect";
 
-    // const fr = new FileReader();
-    // const image = await fr.readAsText(this.state.sendData, "utf-8");
-    // await console.log("from line 52", image);
+    // Request parameters.
+    const params = {
+      returnFaceId: "true",
+      returnFaceLandmarks: "false",
+      returnFaceAttributes:
+        "age,gender,headPose,smile,facialHair,glasses,emotion," +
+        "hair,makeup,occlusion,accessories,blur,exposure,noise"
+    };
+
+    const config = {
+      baseURL: uriBase,
+      method: "post",
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "Ocp-Apim-Subscription-Key": subscriptionKey
+      },
+      processData: false,
+      data: this.state.sendData,
+      params: params
+    };
+
     axios
-      .post("/azure", { base64 })
+      .request(config)
       .then(res => {
-        console.log("line 63 in recognition.js", res);
+        const emotion = res.data[0].faceAttributes.emotion;
+        console.log(res.data);
+        this.setState({ responseFromAPI: emotion });
       })
 
       .catch(error => {
@@ -83,20 +85,22 @@ class Recognition extends Component {
           sadness: 0,
           surprise: 0
         };
-        return "it's error";
+        return emotionErrCase;
       });
   };
 
   getCaptureImage = async webCamData => {
     await this.makeblob(webCamData);
-    console.log(this.state.sendData);
-    await this.submitData(webCamData);
+    await this.submitData();
+    const feelings = this.state.responseFromAPI;
+    console.log(feelings);
+    this.props.getNewSong(feelings.happiness + 0.5 * feelings.neutral);
   };
 
   render() {
     return (
-      <div>
-        <WebcamCapture getCaptureImage={this.getCaptureImage}></WebcamCapture>
+      <div className="webcam__wrapper">
+        <WebcamCapture getCaptureImage={this.getCaptureImage} capture={this.props.capture} />
       </div>
     );
   }
