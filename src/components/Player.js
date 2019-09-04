@@ -1,9 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SpotifyPlayer from 'react-spotify-web-playback';
 import "../styles/Player.scss"
 
-const Player = ({ token }) => {
-  const [playlist, setPlaylist] = useState(["spotify:track:1rgiqIuUwPGob8JH3e6zWX", "spotify:track:6BwClo5W3VvTzJv8bvZXDD"]);
+const Player = ({ token, playlist, requestNewToken, getNewSong }) => {
+  const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    requestNewToken();
+  }, [])
+
+  const logCallback = (state) => {
+    if (state.error === "Authentication failed") requestNewToken();
+    switch(state.type) {
+      case "track_update": {
+        const duration = state.track.durationMs;
+        getNewSong();
+        setOffset(state.position)
+        console.log(state.position);
+        console.log(state);
+        break;
+      }
+      default: 
+        break;
+    }
+  }
 
   return <SpotifyPlayer 
     token={token}
@@ -11,6 +31,8 @@ const Player = ({ token }) => {
     autoPlay={true}
     magnifySliderOnHover={true}
     play={true}
+    callback={logCallback}
+    offset={offset}
   />
 }
 

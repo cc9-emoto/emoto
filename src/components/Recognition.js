@@ -5,8 +5,8 @@ import '../styles/Webcam.scss'
 
 //The component which send image data to Azure to get info
 class Recognition extends Component {
-  constructor(prop) {
-    super(prop);
+  constructor(props) {
+    super(props);
     this.state = {
       photo: "",
       sendData: "",
@@ -70,6 +70,7 @@ class Recognition extends Component {
       .request(config)
       .then(res => {
         const emotion = res.data[0].faceAttributes.emotion;
+        console.log(res.data);
         this.setState({ responseFromAPI: emotion });
       })
 
@@ -91,13 +92,15 @@ class Recognition extends Component {
   getCaptureImage = async webCamData => {
     await this.makeblob(webCamData);
     await this.submitData();
-    console.log(this.state.responseFromAPI);
+    const feelings = this.state.responseFromAPI;
+    console.log(feelings);
+    this.props.getNewSong(feelings.happiness + 0.5 * feelings.neutral);
   };
 
   render() {
     return (
       <div className="webcam__wrapper">
-        <WebcamCapture getCaptureImage={this.getCaptureImage}></WebcamCapture>
+        <WebcamCapture getCaptureImage={this.getCaptureImage} capture={this.props.capture} />
       </div>
     );
   }
