@@ -35,6 +35,7 @@ spotifyRouter.post('/reauthorize', async (req, res) => {
   const { refreshToken } = req.body;
   spotifyApi.setRefreshToken(refreshToken);
   const response = await spotifyApi.refreshAccessToken();
+  console.log(response);
   res.send(response.body["access_token"]);
 })
 
