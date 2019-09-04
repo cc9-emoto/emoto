@@ -17,11 +17,7 @@
     "js-cookie": "^2.2.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.11",
-<<<<<<< HEAD
-    "multer": "^1.4.2",
-=======
     "node-sass": "^4.12.0",
->>>>>>> 46b35cc78920f387f891b72a530044ee05bacc19
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.0.1",

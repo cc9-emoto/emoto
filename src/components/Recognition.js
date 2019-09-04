@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import WebcamCapture from "./WebcamCapture";
-import '../styles/Webcam.scss'
+import "../styles/Webcam.scss";
 
 //The component which send image data to Azure to get info
 class Recognition extends Component {
@@ -42,28 +42,22 @@ class Recognition extends Component {
   //submit to Azure API with params
   submitData = () => {
     const subscriptionKey = process.env.REACT_APP_AZURE_API_KEY;
-    const uriBase =
-      "https://emoto.cognitiveservices.azure.com/face/v1.0/detect";
+    const uriBase = "http://localhost:4000/azure";
 
     // Request parameters.
-    const params = {
-      returnFaceId: "true",
-      returnFaceLandmarks: "false",
-      returnFaceAttributes:
-        "age,gender,headPose,smile,facialHair,glasses,emotion," +
-        "hair,makeup,occlusion,accessories,blur,exposure,noise"
-    };
+    // const params = {
+    //   returnFaceId: "true",
+    //   returnFaceLandmarks: "false",
+    //   returnFaceAttributes:
+    //     "age,gender,headPose,smile,facialHair,glasses,emotion," +
+    //     "hair,makeup,occlusion,accessories,blur,exposure,noise"
+    // };
 
     const config = {
       baseURL: uriBase,
       method: "post",
-      headers: {
-        "Content-Type": "application/octet-stream",
-        "Ocp-Apim-Subscription-Key": subscriptionKey
-      },
       processData: false,
-      data: this.state.sendData,
-      params: params
+      data: this.state.sendData
     };
 
     axios
@@ -100,7 +94,10 @@ class Recognition extends Component {
   render() {
     return (
       <div className="webcam__wrapper">
-        <WebcamCapture getCaptureImage={this.getCaptureImage} capture={this.props.capture} />
+        <WebcamCapture
+          getCaptureImage={this.getCaptureImage}
+          capture={this.props.capture}
+        />
       </div>
     );
   }

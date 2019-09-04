@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const { ApolloServer } = require("apollo-server-express");
 const PORT = 4000;
 const axios = require("axios");
-const multer = require("multer");
+// const multer = require("multer");
 const fs = require("fs");
 const base64ToImage = require("base64-to-image");
 
@@ -20,14 +20,15 @@ app.use("/spotify", spotifyRouter, express.json());
 app.listen({ port: PORT }, () =>
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 );
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-console.log("undienfed", upload.single("image"));
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage });
+// console.log("undienfed", upload.single("image"));
 // app.use(bodyParser.json());
 // const imageBuffer = fs.readFileSync("image.jpg");
 app.use(express.json({ limit: "10mb" }));
 app.post("/azure", (req, res) => {
   const image = req.body.base64;
+  console.log(image);
   let base64 = image.split(";base64,").pop();
   const file = new Promise((res, rej) => {
     fs.onload = res;
