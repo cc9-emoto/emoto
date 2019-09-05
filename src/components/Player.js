@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SpotifyPlayer from 'react-spotify-web-playback';
 import "../styles/Player.scss"
 
-const Player = ({ token, playlist, requestNewToken, getNewSong }) => {
+const Player = ({ token, playlist, requestNewToken, toggleCapture, getNewSong }) => {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
@@ -13,11 +13,11 @@ const Player = ({ token, playlist, requestNewToken, getNewSong }) => {
     if (state.error === "Authentication failed") requestNewToken();
     switch(state.type) {
       case "track_update": {
-        const duration = state.track.durationMs;
-        getNewSong();
-        setOffset(state.position)
-        console.log(state.position);
-        console.log(state);
+        if (state.nextTracks.length === 0) {
+          const duration = state.track.durationMs;
+          toggleCapture()
+          setOffset(playlist.length - 1)
+        }
         break;
       }
       default: 
