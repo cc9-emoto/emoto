@@ -22,7 +22,29 @@ const Dashboard = () => {
   useEffect(() => {
     const user = Cookies.get('emoto-access');
     setToken(user);
+    resetAdded()
+    // startingTwo()
   }, []);
+
+  const resetAdded = async () => {
+    const response = await axios.post('/graphql', {query: 
+      `mutation {
+        resetAdded
+      }`
+    })
+    console.log(`resetAdded: ${response.data}`)
+  }
+
+  // const startingTwo = async () => {
+  //   const response = await axios.post('/graphql', { query: `
+  //     query {
+  //       startingTwo {
+  //         songId
+  //       }
+  //     }
+  //   `})
+  //   console.log(`startingTwo: ${response.data}`)
+  // }
 
   const requestNewToken = async () => {
     const refreshToken = Cookies.get('emoto-refresh');
