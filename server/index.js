@@ -10,7 +10,8 @@ const spotifyRouter = require('./spotifyRouter')
 const server = new ApolloServer({ typeDefs, resolvers });
 server.applyMiddleware({ app });
 
-app.use('/spotify', spotifyRouter)
+app.use(express.json());
+app.use('/spotify', spotifyRouter, express.json())
 app.listen({ port: PORT }, () =>
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 )

@@ -16,7 +16,8 @@ const resolvers = {
       return { email: foundUser.email, uid, token }
     },
     matchingSong: async(_, { value }) => {
-      const song = await Song.find({ emoIndex: { $lte: value }}).sort({ratio: -1}).limit(1).exec();
+      const song = await Song.find({ added: false, emoIndex: { $lte: value }}).sort({ratio: -1}).limit(1).exec();
+      await Song.update({songId: song[0].songId}, {added: true})
       return song[0];
     }
   },

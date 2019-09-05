@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import axios from "axios";
 import WebcamCapture from "./WebcamCapture";
+import '../styles/Webcam.scss'
 
 //The component which send image data to Azure to get info
 class Recognition extends Component {
-  constructor(prop) {
-    super(prop);
+  constructor(props) {
+    super(props);
     this.state = {
       photo: "",
       sendData: "",
@@ -18,7 +19,7 @@ class Recognition extends Component {
   //create blob for sending data to azure
   makeblob = function(baseData) {
     const BASE64_MARKER = ";base64,";
-    if (baseData.indexOf(BASE64_MARKER) == -1) {
+    if (baseData.indexOf(BASE64_MARKER) === -1) {
       const parts = baseData.split(",");
       const contentType = parts[0].split(":")[1];
       const raw = decodeURIComponent(parts[1]);
@@ -39,12 +40,11 @@ class Recognition extends Component {
   };
 
   //submit to Azure API with params
-  submitData = () => {
+  submitData = async () => {
     const subscriptionKey = process.env.REACT_APP_AZURE_API_KEY;
     const uriBase =
       "https://emoto.cognitiveservices.azure.com/face/v1.0/detect";
 
-    // Request parameters.
     const params = {
       returnFaceId: "true",
       returnFaceLandmarks: "false",
@@ -65,38 +65,38 @@ class Recognition extends Component {
       params: params
     };
 
-    axios
-      .request(config)
-      .then(res => {
-        const emotion = res.data[0].faceAttributes.emotion;
-        this.setState({ responseFromAPI: emotion });
-      })
+    const emotionErrCase = {
+      anger: 0,
+      contempt: 0,
+      disgust: 0,
+      fear: 0,
+      happiness: 0,
+      neutral: 1,
+      sadness: 0,
+      surprise: 0
+    };
 
-      .catch(error => {
-        const emotionErrCase = {
-          anger: 0,
-          contempt: 0,
-          disgust: 0,
-          fear: 0,
-          happiness: 0,
-          neutral: 1,
-          sadness: 0,
-          surprise: 0
-        };
-        return emotionErrCase;
-      });
+    const response = await axios.request(config);
+    if (response.data.length > 0) {
+      return response.data[0].faceAttributes.emotion;
+    } else {
+      return emotionErrCase;
+    }
+        
   };
 
   getCaptureImage = async webCamData => {
     await this.makeblob(webCamData);
-    await this.submitData();
+    const feelings = await this.submitData();
+    const feelingValue = feelings.happiness + 0.5 * feelings.neutral;
+    console.log(`feelingValue: ${feelingValue}`);
+    this.props.getNewSong(feelingValue);
   };
 
-  timerSend = async () => {};
   render() {
     return (
-      <div>
-        <WebcamCapture getCaptureImage={this.getCaptureImage}></WebcamCapture>
+      <div className="webcam__wrapper">
+        <WebcamCapture getCaptureImage={this.getCaptureImage} capture={this.props.capture} />
       </div>
     );
   }
