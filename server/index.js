@@ -1,11 +1,8 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const { ApolloServer } = require("apollo-server-express");
 const PORT = 4000;
 const axios = require("axios");
-// const multer = require("multer");
 const fs = require("fs");
-const base64ToImage = require("base64-to-image");
 
 const app = express();
 const { typeDefs } = require("./schema");
@@ -15,38 +12,24 @@ const spotifyRouter = require("./spotifyRouter");
 const server = new ApolloServer({ typeDefs, resolvers });
 server.applyMiddleware({ app });
 
-app.use(express.json());
+// app.use(express.json());
 app.use("/spotify", spotifyRouter, express.json());
 app.listen({ port: PORT }, () =>
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 );
-// const storage = multer.memoryStorage();
-// const upload = multer({ storage });
-// console.log("undienfed", upload.single("image"));
-// app.use(bodyParser.json());
-// const imageBuffer = fs.readFileSync("image.jpg");
-app.use(express.json({ limit: "10mb" }));
-app.post("/azure", (req, res) => {
-  const image = req.body.base64;
-  console.log(image);
-  let base64 = image.split(";base64,").pop();
-  const file = new Promise((res, rej) => {
-    fs.onload = res;
-    return fs.writeFile("image.png", base64, { encoding: "base64" });
-  });
-  file.then(res => console.log("hello", res));
-  // console.log("line22", req.body);
-  // const b64string = req.body.base64;
-  // const buf = Buffer.from(b64string, "base64");
-  // const arraybuf = new ArrayBuffer(buf.length);
-  // const view = new Uint8Array(arraybuf);
-  // for (let i = 0; i < buf.length; ++i) {
-  //   view[i] = buf[i];
-  // }
+app.use(express.json({ limit: "50mb" }));
+app.post("/azure", async (req, res) => {
+  //create image file and read
+  let result;
+  const b64string = req.body.base64;
+  const base64Data = b64string.replace(/^data:image\/jpeg;base64,/, "");
+  fs.writeFileSync(`${req.body.userID}.jpeg`, base64Data, "base64");
 
-  // submitData();
+  const imageBuffer = fs.readFileSync(`${req.body.userID}.jpeg`);
 
-  function submitData() {
+  //post image file to Azure, get response emotion from Azure
+  const submitData = async () => {
+    let apiReturn;
     const subscriptionKey = process.env.REACT_APP_AZURE_API_KEY;
     const uriBase =
       "https://emoto.cognitiveservices.azure.com/face/v1.0/detect";
@@ -67,20 +50,19 @@ app.post("/azure", (req, res) => {
         "Ocp-Apim-Subscription-Key": subscriptionKey
       },
       processData: false,
-      data: buf,
+      data: imageBuffer,
       params: params
     };
 
-    axios
+    apiReturn = await axios
       .request(config)
       .then(res => {
-        const emotion = res.data[0].faceAttributes.emotion;
-        console.log(emotion);
+        return res.data[0].faceAttributes.emotion;
       })
-
-      .catch(error => {
-        console.log("error?", error.response.data);
-        const emotionErrCase = {
+      .catch(function(error) {
+        //leave console.log to check error from Azure
+        console.log("error!", error);
+        const errorRes = {
           anger: 0,
           contempt: 0,
           disgust: 0,
@@ -90,7 +72,10 @@ app.post("/azure", (req, res) => {
           sadness: 0,
           surprise: 0
         };
-        return emotionErrCase;
+        return errorRes;
       });
-  }
+    return apiReturn;
+  };
+  result = await submitData();
+  await res.send(result);
 });
