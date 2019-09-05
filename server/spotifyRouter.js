@@ -8,10 +8,10 @@ const Song = require("../db/Song.js");
 
 const SpotifyWebApi = require("spotify-web-api-node");
 const spotifyApi = new SpotifyWebApi({
-  clientId : process.env.SPOTIFY_CLIENT_ID,
-  clientSecret : process.env.SPOTIFY_CLIENT_SECRET,
-  redirectUri : "http://localhost:4000/spotify/callback"
-}); 
+  clientId: process.env.SPOTIFY_CLIENT_ID,
+  clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+  redirectUri: "http://localhost:4000/spotify/callback"
+});
 
 const scopes = [
   "streaming",
@@ -35,7 +35,7 @@ spotifyRouter.post("/reauthorize", async (req, res) => {
   const { refreshToken } = req.body;
   spotifyApi.setRefreshToken(refreshToken);
   const response = await spotifyApi.refreshAccessToken();
-  console.log(response);
+  // console.log(response);
   res.send(response.body["access_token"]);
 });
 

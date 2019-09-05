@@ -18,7 +18,7 @@ class WebcamCapture extends React.Component {
   timer = () => {
     setInterval(() => {
       this.capture();
-    }, 3000);
+    }, 10000);
   };
 
   componentDidMount() {
