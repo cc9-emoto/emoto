@@ -12,6 +12,7 @@ const typeDefs = gql`
   type Query {
     user(token: String): User
     matchingSong(value: Float): Song
+    startingTwo: [Song]
   }
 
   type Mutation {
@@ -23,5 +24,3 @@ const typeDefs = gql`
 `;
 
 module.exports = { typeDefs };
-
-// startingTwo: [Song]  
