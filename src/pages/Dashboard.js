@@ -22,7 +22,29 @@ const Dashboard = () => {
   useEffect(() => {
     const user = Cookies.get('emoto-access');
     setToken(user);
+    resetAdded()
+    // startingTwo()
   }, []);
+
+  const resetAdded = async () => {
+    const response = await axios.post('/graphql', {query: 
+      `mutation {
+        resetAdded
+      }`
+    })
+    console.log(`resetAdded: ${response.data}`)
+  }
+
+  // const startingTwo = async () => {
+  //   const response = await axios.post('/graphql', { query: `
+  //     query {
+  //       startingTwo {
+  //         songId
+  //       }
+  //     }
+  //   `})
+  //   console.log(`startingTwo: ${response.data}`)
+  // }
 
   const requestNewToken = async () => {
     const refreshToken = Cookies.get('emoto-refresh');
@@ -31,7 +53,8 @@ const Dashboard = () => {
     setToken(response.data);
   }
 
-  const getNewSong = async (value = 0) => {
+  const getNewSong = async (value = 0.5) => {
+    console.log("Getting a new song...")
     const response = await axios.post('/graphql', { query: `
       query {
         matchingSong (value: ${value}) {
@@ -39,6 +62,7 @@ const Dashboard = () => {
         }
       }
     `})
+    console.log(response.data);
     const newSongId = response.data.data.matchingSong.songId
     console.log(`Got a new song! ${newSongId}`);
     pushToPlaylist(`spotify:track:${newSongId}`);
@@ -48,12 +72,18 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="dashboard__top">
         <Recognition capture={capture} getNewSong={getNewSong} />
-        <button onClick={() => getNewSong(0.7)}>BUTTON</button>
-        <button onClick={toggleCapture}>CAPTURE</button>
+        {/* <button onClick={() => getNewSong(0.7)}>BUTTON</button> */}
+        {/* <button onClick={toggleCapture}>CAPTURE</button> */}
 
-      </div>
+      </div>  
       <div className="dashboard__bottom">
-        <Player token={token} playlist={playlist} requestNewToken={requestNewToken} toggleCapture={toggleCapture} getNewSong={getNewSong} />
+        <Player 
+          token={token} 
+          playlist={playlist} 
+          requestNewToken={requestNewToken} 
+          toggleCapture={toggleCapture} 
+          getNewSong={getNewSong}
+        />
       </div>
     </div>
   )
