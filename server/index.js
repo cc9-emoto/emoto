@@ -5,25 +5,33 @@ const axios = require("axios");
 const fs = require("fs");
 
 const app = express();
+<<<<<<< HEAD
 const { typeDefs } = require('./schema');
 const { resolvers } = require('./resolvers')
 const spotifyRouter = require('./spotifyRouter')
 const { print } = require('graphql');
+=======
+app.use(express.json({ limit: "50mb" }));
+const { typeDefs } = require("./schema");
+const { resolvers } = require("./resolvers");
+const spotifyRouter = require("./spotifyRouter");
+const { print } = require("graphql");
+>>>>>>> master
 
 class BasicLogging {
-  requestDidStart({queryString, parsedQuery, variables}) {
+  requestDidStart({ queryString, parsedQuery, variables }) {
     const query = queryString || print(parsedQuery);
     console.log(query);
     console.log(variables);
   }
 
-  willSendResponse({graphqlResponse}) {
+  willSendResponse({ graphqlResponse }) {
     console.log(JSON.stringify(graphqlResponse, null, 2));
   }
 }
 
-const server = new ApolloServer({ 
-  typeDefs, 
+const server = new ApolloServer({
+  typeDefs,
   resolvers,
   formatError: error => {
     console.log(error);
@@ -37,12 +45,11 @@ const server = new ApolloServer({
 });
 server.applyMiddleware({ app });
 
-// app.use(express.json());
-app.use("/spotify", spotifyRouter, express.json());
+app.use("/spotify", spotifyRouter);
 app.listen({ port: PORT }, () =>
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 );
-app.use(express.json({ limit: "50mb" }));
+
 app.post("/azure", async (req, res) => {
   //create image file and read
   let result;
