@@ -16,12 +16,32 @@ const resolvers = {
       return { email: foundUser.email, uid, token };
     },
     matchingSong: async (_, { value }) => {
-      const song = await Song.find({ added: false, emoIndex: { $lte: value } })
+      const songsBelow = await Song.find({
+        added: false,
+        emoIndex: { $lte: value }
+      })
         .sort({ ratio: -1 })
         .limit(1)
         .exec();
-      await Song.update({ songId: song[0].songId }, { added: true });
-      return song[0];
+      const songsAbove = await Song.find({
+        added: false,
+        emoIndex: { $gte: value }
+      })
+        .sort({ ratio: -1 })
+        .limit(1)
+        .exec();
+      const songs = [...songsAbove, ...songsBelow];
+      await Song.updateOne({ songId: songs[0].songId }, { added: true });
+      return songs[0];
+    },
+    startingTwo: async (_, { userId }) => {
+      console.log(userId);
+      const response = await Song.find({ userId })
+        .limit(2)
+        .exec();
+      await Song.updateOne({ songId: response[0].songId }, { added: true });
+      await Song.updateOne({ songId: response[1].songId }, { added: true });
+      return response;
     }
   },
   Mutation: {
@@ -57,6 +77,10 @@ const resolvers = {
       } else {
         return { email: "", uid: "" };
       }
+    },
+    resetAdded: async (_, { userId }) => {
+      await Song.updateMany({ userId, added: true }, { added: false }).exec();
+      return true;
     }
   }
 };

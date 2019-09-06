@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Webcam from "react-webcam";
 
 //The component to get base64 data through webcam
 class WebcamCapture extends React.Component {
-  constructor(prop) {
-    super(prop);
+  constructor(props) {
+    super(props);
     this.setRef = webcam => {
       this.webcam = webcam;
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.capture !== this.props.capture) this.capture();
   }
 
   capture = () => {

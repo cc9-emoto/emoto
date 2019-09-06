@@ -3,8 +3,8 @@ import axios from "axios";
 import WebcamCapture from "./WebcamCapture";
 import "../styles/Webcam.scss";
 
-//The component which send image data to Azure to get info
 class Recognition extends Component {
+<<<<<<< HEAD
   submitData = base64 => {
     axios
       .post("/azure", { base64, userID: "abcde" })
@@ -14,11 +14,15 @@ class Recognition extends Component {
         this.setState({ responseFromAPI: apiRes });
       })
       .catch(error => error);
+=======
+  submitData = async base64 => {
+    const response = await axios.post("/azure", { base64, userID: "abcde" });
+    return response.data;
+>>>>>>> master
   };
 
   getCaptureImage = async webCamData => {
-    this.submitData(webCamData);
-    const feelings = this.state.responseFromAPI;
+    const feelings = await this.submitData(webCamData);
     this.props.getNewSong(feelings.happiness + 0.5 * feelings.neutral);
   };
 
