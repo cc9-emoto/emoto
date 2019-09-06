@@ -23,6 +23,7 @@
     "react-spotify-web-playback": "^0.6.0",
     "react-webcam": "^2.0.1",
     "spotify-web-api-node": "^4.0.0",
+    "three.js": "^0.77.1",
     "uuid": "^3.3.3"
   },
   "scripts": {
