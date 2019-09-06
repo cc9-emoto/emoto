@@ -3,7 +3,13 @@ import React, { useState, useEffect } from "react";
 import SpotifyPlayer from "react-spotify-web-playback";
 import "../styles/Player.scss";
 
-const Player = ({ token, playlist, requestNewToken, toggleCapture }) => {
+const Player = ({
+  token,
+  playlist,
+  requestNewToken,
+  toggleCapture,
+  playerPlaying
+}) => {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
@@ -30,9 +36,8 @@ const Player = ({ token, playlist, requestNewToken, toggleCapture }) => {
     <SpotifyPlayer
       token={token}
       uris={playlist}
-      autoPlay={true}
       magnifySliderOnHover={true}
-      play={true}
+      play={playerPlaying}
       callback={logCallback}
       offset={offset}
     />

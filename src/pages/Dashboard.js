@@ -8,6 +8,12 @@ import "../styles/Dashboard.scss";
 
 const Dashboard = () => {
   const [token, setToken] = useState("");
+  const [playerPlaying, setPlayerPlaying] = useState(false);
+
+  const [beats, setBeats] = useState([]);
+  const pushToBeats = newBeats => {
+    setBeats(prevState => [...prevState, newBeats]);
+  };
 
   const [playlist, setPlaylist] = useState([]);
   const pushToPlaylist = spotifyURI => {
@@ -26,8 +32,12 @@ const Dashboard = () => {
     startingTwo();
   }, []);
 
+  useEffect(() => {
+    if (playlist.length === beats.length && beats.length > 0)
+      setPlayerPlaying(true);
+  }, [playlist, beats]);
+
   const resetAdded = async () => {
-    console.log("resetAdded");
     const user = Cookies.get("emoto-id");
     const response = await axios.post("/graphql", {
       query: `mutation {
@@ -37,7 +47,6 @@ const Dashboard = () => {
   };
 
   const startingTwo = async () => {
-    console.log("StartingTwo");
     const user = Cookies.get("emoto-id");
     const starting = [];
     const response = await axios.post("/graphql", {
@@ -49,9 +58,9 @@ const Dashboard = () => {
       }
     `
     });
-    console.log(response);
     for (let item of response.data.data.startingTwo) {
       starting.push(`spotify:track:${item.songId}`);
+      getBeats(item.songId);
     }
     setPlaylist([...playlist, ...starting]);
   };
@@ -76,6 +85,17 @@ const Dashboard = () => {
     const newSongId = response.data.data.matchingSong.songId;
     console.log(`Got a new song! ${newSongId}`);
     pushToPlaylist(`spotify:track:${newSongId}`);
+    getBeats(newSongId);
+  };
+
+  const getBeats = async songId => {
+    console.log("getBeats");
+    const accessToken = Cookies.get("emoto-access");
+    const response = await axios.post("/spotify/analyze", {
+      songId,
+      accessToken
+    });
+    pushToBeats(response.data.beats);
   };
 
   return (
@@ -85,6 +105,7 @@ const Dashboard = () => {
       </div>
       <div className="dashboard__bottom">
         <Player
+          playerPlaying={playerPlaying}
           token={token}
           playlist={playlist}
           requestNewToken={requestNewToken}

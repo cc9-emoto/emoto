@@ -42,6 +42,7 @@ spotifyRouter.post("/analyze", async (req, res) => {
   spotifyApi.setAccessToken(accessToken);
   try {
     const response = await spotifyApi.getAudioAnalysisForTrack(songId);
+    console.log(response);
     res.send(response.body);
   } catch (err) {
     res.status(500).send("Something broke!");
