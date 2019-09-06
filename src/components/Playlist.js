@@ -26,15 +26,15 @@ const Playlist = ({ playlist }) => {
     }
   ]);
 
-  const getSongs = async () => {
-    console.log("test");
-    const response = await axios.post("/graphql", {
-      query: `
-      query{
-        
-      }`
-    });
-  };
+  // const getSongs = async () => {
+  //   console.log("test");
+  //   const response = await axios.post("/graphql", {
+  //     query: `
+  //     query{
+
+  //     }`
+  //   });
+  // };
 
   return (
     <div>
