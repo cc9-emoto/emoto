@@ -1,21 +1,29 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import anime from "animejs";
 import "../styles/Visualization.scss";
 
-import data from "../data.json";
-
-const Visualization = () => {
+const Visualization = ({ beatsData = [], playerPlaying }) => {
   const [time, setTime] = useState(0);
+  const [duration, setDuration] = useState(200);
   const beats = new Set(
-    data.beats.map(beat => Math.ceil((beat.start * 1000) / 100) * 100)
+    beatsData.map(beat => Math.ceil((beat.start * 1000) / 100) * 100)
   );
 
   useEffect(() => {
-    startTicker();
-  }, []);
+    if (beatsData.length > 0 && time === 0 && playerPlaying) {
+      startTicker();
+      const avgDuration =
+        beatsData.reduce((acc, beat) => acc + beat.duration, 0) /
+        beatsData.length;
+      setDuration(avgDuration * 1000);
+    }
+  }, [beatsData, playerPlaying]);
 
   useEffect(() => {
-    if (beats.has(time)) animate();
+    if (beats.has(time)) {
+      animate();
+    }
   }, [time, beats]);
 
   const startTicker = () => {
@@ -26,8 +34,8 @@ const Visualization = () => {
       targets: ".circle",
       direction: "alternate",
       scale: [
-        { value: 0.95, easing: "easeInOutQuad", duration: 200 },
-        { value: 1, easing: "easeInOutQuad", duration: 200 }
+        { value: 0.95, easing: "easeInOutQuad", duration: duration / 2 },
+        { value: 1, easing: "easeInOutQuad", duration: duration / 2 }
       ],
       delay: anime.stagger(5, { grid: [25, 30], from: "center" })
     });
@@ -45,11 +53,7 @@ const Visualization = () => {
 
   return (
     <div className="visualization">
-      <button className="BEATBUTTON" onClick={animate}>
-        BEAT!
-      </button>
-      <div className="timer">{time}</div>
-      <div></div>
+      {/* <div className="timer">{time}</div> */}
       <svg viewBox="0 0 100 55">{renderCircles()}</svg>
     </div>
   );
