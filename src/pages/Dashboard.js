@@ -27,6 +27,7 @@ const Dashboard = () => {
   }, []);
 
   const resetAdded = async () => {
+    console.log("resetAdded");
     const user = Cookies.get("emoto-id");
     const response = await axios.post("/graphql", {
       query: `mutation {
@@ -36,6 +37,7 @@ const Dashboard = () => {
   };
 
   const startingTwo = async () => {
+    console.log("StartingTwo");
     const user = Cookies.get("emoto-id");
     const starting = [];
     const response = await axios.post("/graphql", {
@@ -47,6 +49,7 @@ const Dashboard = () => {
       }
     `
     });
+    console.log(response);
     for (let item of response.data.data.startingTwo) {
       starting.push(`spotify:track:${item.songId}`);
     }
@@ -61,7 +64,6 @@ const Dashboard = () => {
   };
 
   const getNewSong = async (value = 0.5) => {
-    console.log("Getting a new song...");
     const response = await axios.post("/graphql", {
       query: `
       query {
@@ -71,7 +73,6 @@ const Dashboard = () => {
       }
     `
     });
-    console.log(response.data);
     const newSongId = response.data.data.matchingSong.songId;
     console.log(`Got a new song! ${newSongId}`);
     pushToPlaylist(`spotify:track:${newSongId}`);

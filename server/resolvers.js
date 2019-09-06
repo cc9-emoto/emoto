@@ -15,16 +15,32 @@ const resolvers = {
       const foundUser = await User.findOne({ uid }).exec();
       return { email: foundUser.email, uid, token };
     },
-    matchingSong: async(_, { value }) => {
-      const song = await Song.find({ added: false, emoIndex: { $lte: value }}).sort({ratio: -1}).limit(1).exec();
-      await Song.updateOne({songId: song[0].songId}, {added: true})
-      return song[0];
+    matchingSong: async (_, { value }) => {
+      const songsBelow = await Song.find({
+        added: false,
+        emoIndex: { $lte: value }
+      })
+        .sort({ ratio: -1 })
+        .limit(1)
+        .exec();
+      const songsAbove = await Song.find({
+        added: false,
+        emoIndex: { $gte: value }
+      })
+        .sort({ ratio: -1 })
+        .limit(1)
+        .exec();
+      const songs = [...songsAbove, ...songsBelow];
+      await Song.updateOne({ songId: songs[0].songId }, { added: true });
+      return songs[0];
     },
     startingTwo: async (_, { userId }) => {
       console.log(userId);
-      const response = await Song.find({ userId }).limit(2).exec();
-      await Song.updateOne({songId: response[0].songId}, {added: true})
-      await Song.updateOne({songId: response[1].songId}, {added: true})
+      const response = await Song.find({ userId })
+        .limit(2)
+        .exec();
+      await Song.updateOne({ songId: response[0].songId }, { added: true });
+      await Song.updateOne({ songId: response[1].songId }, { added: true });
       return response;
     }
   },
@@ -63,9 +79,9 @@ const resolvers = {
       }
     },
     resetAdded: async (_, { userId }) => {
-      await Song.updateMany({userId, added: true}, {added: false}).exec();
+      await Song.updateMany({ userId, added: true }, { added: false }).exec();
       return true;
-    },
+    }
   }
 };
 

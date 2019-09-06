@@ -3,13 +3,7 @@ import React, { useState, useEffect } from "react";
 import SpotifyPlayer from "react-spotify-web-playback";
 import "../styles/Player.scss";
 
-const Player = ({
-  token,
-  playlist,
-  requestNewToken,
-  toggleCapture,
-  getNewSong
-}) => {
+const Player = ({ token, playlist, requestNewToken, toggleCapture }) => {
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
