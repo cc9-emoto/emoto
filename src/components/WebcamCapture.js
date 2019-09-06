@@ -3,15 +3,11 @@ import Webcam from "react-webcam";
 
 //The component to get base64 data through webcam
 class WebcamCapture extends React.Component {
-  constructor(props) {
-    super(props);
-    this.setRef = (webcam) => { this.webcam = webcam; };
-  }
-
-  componentDidUpdate = (prevProps) => {
-    if (prevProps.capture !== this.props.capture) {
-      this.capture();
-    }
+  constructor(prop) {
+    super(prop);
+    this.setRef = webcam => {
+      this.webcam = webcam;
+    };
   }
 
   capture = () => {
@@ -19,15 +15,15 @@ class WebcamCapture extends React.Component {
     this.props.getCaptureImage(imageSrc);
   };
 
-  // timer = () => {
-  //   setInterval(() => {
-  //     this.capture();
-  //   }, 5000);
-  // };
+  timer = () => {
+    setInterval(() => {
+      this.capture();
+    }, 10000);
+  };
 
-  // componentDidMount() {
-  //   this.timer();
-  // }
+  componentDidMount() {
+    this.timer();
+  }
 
   render() {
     const videoConstraints = {
@@ -37,14 +33,16 @@ class WebcamCapture extends React.Component {
     };
 
     return (
-      <Webcam
-        audio={false}
-        height={250}
-        ref={this.setRef}
-        screenshotFormat="image/jpeg"
-        width={445}
-        videoConstraints={videoConstraints}
-      />
+      <div>
+        <Webcam
+          audio={false}
+          height={720}
+          ref={this.setRef}
+          screenshotFormat="image/jpeg"
+          width={1280}
+          videoConstraints={videoConstraints}
+        />
+      </div>
     );
   }
 }
