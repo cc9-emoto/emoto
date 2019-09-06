@@ -1,4 +1,5 @@
 const express = require("express");
+const axios = require("axios");
 const spotifyRouter = express.Router();
 
 const db = require("../db/db.js");
@@ -34,18 +35,8 @@ spotifyRouter.post("/reauthorize", async (req, res) => {
   const { refreshToken } = req.body;
   spotifyApi.setRefreshToken(refreshToken);
   const response = await spotifyApi.refreshAccessToken();
+  // console.log(response);
   res.send(response.body["access_token"]);
-});
-
-spotifyRouter.post("/analyze", async (req, res) => {
-  const { songId, accessToken } = req.body;
-  spotifyApi.setAccessToken(accessToken);
-  try {
-    const response = await spotifyApi.getAudioAnalysisForTrack(songId);
-    res.send(response.body);
-  } catch (err) {
-    res.status(500).send("Something broke!");
-  }
 });
 
 spotifyRouter.get("/callback", (req, res) => {
@@ -69,20 +60,6 @@ spotifyRouter.get("/callback", (req, res) => {
 
         const topTrackData = await spotifyApi.getMyTopTracks({ limit: 50 });
         songList(newUser.spotifyId, topTrackData)
-        // const topTrackIds = topTrackData.body.items.map(song => song.id);
-        // const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(
-        //   topTrackIds
-        // );
-
-        // for (const song of musicFeatures.body["audio_features"]) {
-        //   const { valence, mode, energy, id } = song;
-        //   const newSong = await new Song({
-        //     userId: newUser.spotifyId,
-        //     songId: id,
-        //     emoIndex: calculateEmoIndex({ valence, mode, energy })
-        //   });
-        //   newSong.save();
-        // }
       }
 
       if (!authorizationCode) {
@@ -119,5 +96,19 @@ const songList = async (spotifyId, trackList) => {
           newSong.save();
         }
 }
+
+spotifyRouter.get("/recommended", (req, res) => {
+  const trackId = "0c6xIDDpzE81m2q797ordA"
+  spotifyApi.getRecommendations({ seed_tracks: trackId }).then(response => {
+    console.log( response)
+  },
+  function(err) {
+    console.log(
+      "Something went wrong when retrieving recommendations!",
+      err.message
+    );
+  })
+  res.send("yup")
+});
 
 module.exports = spotifyRouter;

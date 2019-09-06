@@ -5,18 +5,11 @@ const axios = require("axios");
 const fs = require("fs");
 
 const app = express();
-<<<<<<< HEAD
-const { typeDefs } = require('./schema');
-const { resolvers } = require('./resolvers')
-const spotifyRouter = require('./spotifyRouter')
-const { print } = require('graphql');
-=======
 app.use(express.json({ limit: "50mb" }));
 const { typeDefs } = require("./schema");
 const { resolvers } = require("./resolvers");
 const spotifyRouter = require("./spotifyRouter");
 const { print } = require("graphql");
->>>>>>> master
 
 class BasicLogging {
   requestDidStart({ queryString, parsedQuery, variables }) {
