@@ -12,16 +12,15 @@ const typeDefs = gql`
   type Query {
     user(token: String): User
     matchingSong(value: Float): Song
+    startingTwo(userId: String): [Song]
   }
 
   type Mutation {
     createUser(email: String, password: String): User
     createSession(email: String, password: String): User
-    resetAdded: Boolean
+    resetAdded(userId: String): Boolean
   }
 
 `;
 
 module.exports = { typeDefs };
-
-// startingTwo: [Song]  
