@@ -6,7 +6,9 @@ import "./styles/App.scss";
 import Index from "./pages/Index.js";
 import Dashboard from "./pages/Dashboard.js";
 import Onboarding from "./pages/Onboarding.js";
+import Animation from "./pages/Animation.js";
 import Visualization from "./pages/Visualization.js";
+
 
 const App = () => {
   return (
@@ -14,6 +16,7 @@ const App = () => {
       <Route path="/" exact component={Index} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/onboarding" component={Onboarding} />
+      <Route path="/animation" component={Animation} />
       <Route path="/vis" component={Visualization} />
     </Router>
   );
