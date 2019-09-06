@@ -59,20 +59,21 @@ spotifyRouter.get("/callback", (req, res) => {
         newUser.save();
 
         const topTrackData = await spotifyApi.getMyTopTracks({ limit: 50 });
-        const topTrackIds = topTrackData.body.items.map(song => song.id);
-        const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(
-          topTrackIds
-        );
+        songList(newUser.spotifyId, topTrackData)
+        // const topTrackIds = topTrackData.body.items.map(song => song.id);
+        // const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(
+        //   topTrackIds
+        // );
 
-        for (const song of musicFeatures.body["audio_features"]) {
-          const { valence, mode, energy, id } = song;
-          const newSong = await new Song({
-            userId: newUser.spotifyId,
-            songId: id,
-            emoIndex: calculateEmoIndex({ valence, mode, energy })
-          });
-          newSong.save();
-        }
+        // for (const song of musicFeatures.body["audio_features"]) {
+        //   const { valence, mode, energy, id } = song;
+        //   const newSong = await new Song({
+        //     userId: newUser.spotifyId,
+        //     songId: id,
+        //     emoIndex: calculateEmoIndex({ valence, mode, energy })
+        //   });
+        //   newSong.save();
+        // }
       }
 
       if (!authorizationCode) {
@@ -92,5 +93,22 @@ spotifyRouter.get("/callback", (req, res) => {
     }
   );
 });
+
+const songList = async (spotifyId, trackList) => {
+  const trackIds = trackList.body.items.map(song => song.id);
+        const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(
+          trackIds
+        );
+
+        for (const song of musicFeatures.body["audio_features"]) {
+          const { valence, mode, energy, id } = song;
+          const newSong = await new Song({
+            userId: spotifyId,
+            songId: id,
+            emoIndex: calculateEmoIndex({ valence, mode, energy })
+          });
+          newSong.save();
+        }
+}
 
 module.exports = spotifyRouter;
