@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Cookies from "js-cookie";
-
-import Recognition from "../components/Recognition";
-import Player from "../components/Player";
-import Playlist from "../components/Playlist";
-=======
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -14,7 +5,6 @@ import Cookies from "js-cookie";
 import Visualization from "../components/Visualization";
 import Recognition from "../components/Recognition";
 import Player from "../components/Player";
->>>>>>> edd9711d37399a8acaf7c49672e3e48d25c0e390
 import "../styles/Dashboard.scss";
 
 const Dashboard = () => {
