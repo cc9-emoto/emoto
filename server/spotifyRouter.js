@@ -1,5 +1,4 @@
 const express = require("express");
-const axios = require("axios");
 const spotifyRouter = express.Router();
 
 const db = require("../db/db.js");
@@ -35,8 +34,18 @@ spotifyRouter.post("/reauthorize", async (req, res) => {
   const { refreshToken } = req.body;
   spotifyApi.setRefreshToken(refreshToken);
   const response = await spotifyApi.refreshAccessToken();
-  // console.log(response);
   res.send(response.body["access_token"]);
+});
+
+spotifyRouter.post("/analyze", async (req, res) => {
+  const { songId, accessToken } = req.body;
+  spotifyApi.setAccessToken(accessToken);
+  try {
+    const response = await spotifyApi.getAudioAnalysisForTrack(songId);
+    res.send(response.body);
+  } catch (err) {
+    res.status(500).send("Something broke!");
+  }
 });
 
 spotifyRouter.get("/callback", (req, res) => {
