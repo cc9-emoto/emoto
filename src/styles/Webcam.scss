@@ -4,7 +4,10 @@
   display: flex;
   align-items: center;
   border-radius: 250px;
+  border: 10px solid white;
   overflow: hidden;
+  position: relative;
+  z-index: 3;
   video {
     margin-left: -110px;
   }

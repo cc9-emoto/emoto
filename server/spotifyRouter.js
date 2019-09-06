@@ -39,6 +39,18 @@ spotifyRouter.post("/reauthorize", async (req, res) => {
   res.send(response.body["access_token"]);
 });
 
+spotifyRouter.post("/analyze", async (req, res) => {
+  const { songId, accessToken } = req.body;
+  spotifyApi.setAccessToken(accessToken);
+  try {
+    const response = await spotifyApi.getAudioAnalysisForTrack(songId);
+    console.log(response);
+    res.send(response.body);
+  } catch (err) {
+    res.status(500).send("Something broke!");
+  }
+});
+
 spotifyRouter.get("/callback", (req, res) => {
   const authorizationCode = req.query.code;
 

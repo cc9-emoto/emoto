@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import SpotifyPlayer from "react-spotify-web-playback";
 import "../styles/Player.scss";
@@ -5,12 +6,12 @@ import "../styles/Player.scss";
 const Player = ({
   token,
   playlist,
+  offset,
+  setOffset,
   requestNewToken,
   toggleCapture,
-  getNewSong
+  playerPlaying
 }) => {
-  const [offset, setOffset] = useState(0);
-
   useEffect(() => {
     requestNewToken();
   }, []);
@@ -35,9 +36,8 @@ const Player = ({
     <SpotifyPlayer
       token={token}
       uris={playlist}
-      autoPlay={true}
       magnifySliderOnHover={true}
-      play={true}
+      play={playerPlaying}
       callback={logCallback}
       offset={offset}
     />
