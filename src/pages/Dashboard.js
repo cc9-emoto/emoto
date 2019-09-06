@@ -9,7 +9,7 @@ import "../styles/Dashboard.scss"
 const Dashboard = () => {
   const [token, setToken] = useState("");
 
-  const [playlist, setPlaylist] = useState(["spotify:track:1rgiqIuUwPGob8JH3e6zWX", "spotify:track:6BwClo5W3VvTzJv8bvZXDD"]);
+  const [playlist, setPlaylist] = useState([]);
   const pushToPlaylist = (spotifyURI) => {
     setPlaylist([...playlist, spotifyURI])
   } 
@@ -23,28 +23,34 @@ const Dashboard = () => {
     const user = Cookies.get('emoto-access');
     setToken(user);
     resetAdded()
-    // startingTwo()
+    startingTwo()
   }, []);
 
   const resetAdded = async () => {
+    const user = Cookies.get('emoto-id');
     const response = await axios.post('/graphql', {query: 
       `mutation {
-        resetAdded
+        resetAdded (userId: "${user}")
       }`
     })
-    console.log(`resetAdded: ${response.data}`)
+    console.log(response.data.data.resetAdded)
   }
 
-  // const startingTwo = async () => {
-  //   const response = await axios.post('/graphql', { query: `
-  //     query {
-  //       startingTwo {
-  //         songId
-  //       }
-  //     }
-  //   `})
-  //   console.log(`startingTwo: ${response.data}`)
-  // }
+  const startingTwo = async () => {
+    const user = Cookies.get('emoto-id');
+    const starting = []
+    const response = await axios.post('/graphql', { query: `
+      query {
+        startingTwo (userId: "${user}") {
+          songId
+        }
+      }
+    `})
+    for (let item of response.data.data.startingTwo) {
+      starting.push(`spotify:track:${item.songId}`)
+    }
+    setPlaylist([...playlist, ...starting])
+  }
 
   const requestNewToken = async () => {
     const refreshToken = Cookies.get('emoto-refresh');

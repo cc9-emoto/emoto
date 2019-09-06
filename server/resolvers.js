@@ -20,10 +20,13 @@ const resolvers = {
       await Song.updateOne({songId: song[0].songId}, {added: true})
       return song[0];
     },
-    // startingTwo: async () => {
-    //   const two = await Song.find({ added: false}).limit(2).exec();
-    //   return two;
-    // }
+    startingTwo: async (_, { userId }) => {
+      console.log(userId);
+      const response = await Song.find({ userId }).limit(2).exec();
+      await Song.updateOne({songId: response[0].songId}, {added: true})
+      await Song.updateOne({songId: response[1].songId}, {added: true})
+      return response;
+    }
   },
   Mutation: {
     createUser: async (_, { email, password }) => {
@@ -59,11 +62,8 @@ const resolvers = {
         return { email: "", uid: "" };
       }
     },
-    resetAdded: async () => {
-      const songs = await Song.find({added: false}).exec();
-      console.log(songs.length)
-      const response = await Song.updateMany({added: true}, {added: false}).exec();
-      console.log(response);
+    resetAdded: async (_, { userId }) => {
+      await Song.updateMany({userId, added: true}, {added: false}).exec();
       return true;
     },
   }
