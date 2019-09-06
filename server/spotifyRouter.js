@@ -71,7 +71,8 @@ spotifyRouter.get("/callback", (req, res) => {
         newUser.save();
 
         const topTrackData = await spotifyApi.getMyTopTracks({ limit: 50 });
-        songList(newUser.spotifyId, topTrackData)
+        const trackIds = topTrackData.body.items.map(song => song.id);
+        songList(newUser.spotifyId, trackIds)
       }
 
       if (!authorizationCode) {
@@ -92,35 +93,38 @@ spotifyRouter.get("/callback", (req, res) => {
   );
 });
 
-const songList = async (spotifyId, trackList) => {
-  const trackIds = trackList.body.items.map(song => song.id);
-        const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(
-          trackIds
-        );
-
-        for (const song of musicFeatures.body["audio_features"]) {
-          const { valence, mode, energy, id } = song;
-          const newSong = await new Song({
-            userId: spotifyId,
-            songId: id,
-            emoIndex: calculateEmoIndex({ valence, mode, energy })
-          });
-          newSong.save();
-        }
+const songList = async (spotifyId, trackIdList) => {
+  console.log(trackIdList)
+  const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(
+    trackIdList
+  );
+  console.log(musicFeatures)
+  for (const song of musicFeatures.body["audio_features"]) {
+    const { valence, mode, energy, id } = song;
+    try {
+      const newSong = await new Song({
+        userId: spotifyId,
+        songId: id,
+        emoIndex: calculateEmoIndex({ valence, mode, energy })
+      });
+      newSong.save();
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
 
-spotifyRouter.get("/recommended", (req, res) => {
-  const trackId = "0c6xIDDpzE81m2q797ordA"
-  spotifyApi.getRecommendations({ seed_tracks: trackId }).then(response => {
-    console.log( response)
-  },
-  function(err) {
-    console.log(
-      "Something went wrong when retrieving recommendations!",
-      err.message
-    );
-  })
-  res.send("yup")
+spotifyRouter.post("/recommended", async (req, res) => {
+  const { songId, accessToken, spotifyId } = req.body;
+  spotifyApi.setAccessToken(accessToken);
+  try {
+    const response = await spotifyApi.getRecommendations({ seed_tracks: songId });
+    const trackIdList = response.body.tracks.map(song => song.id)
+    songList(spotifyId, trackIdList);
+    res.send(response.body.tracks)
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 module.exports = spotifyRouter;
