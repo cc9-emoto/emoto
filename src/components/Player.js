@@ -6,12 +6,12 @@ import "../styles/Player.scss";
 const Player = ({
   token,
   playlist,
+  offset,
+  setOffset,
   requestNewToken,
   toggleCapture,
   playerPlaying
 }) => {
-  const [offset, setOffset] = useState(0);
-
   useEffect(() => {
     requestNewToken();
   }, []);

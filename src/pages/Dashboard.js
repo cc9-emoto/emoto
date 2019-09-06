@@ -2,12 +2,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import Visualization from "../components/Visualization";
 import Recognition from "../components/Recognition";
 import Player from "../components/Player";
 import "../styles/Dashboard.scss";
 
 const Dashboard = () => {
   const [token, setToken] = useState("");
+  const [offset, setOffset] = useState(0);
   const [playerPlaying, setPlayerPlaying] = useState(false);
 
   const [beats, setBeats] = useState([]);
@@ -102,6 +104,10 @@ const Dashboard = () => {
     <div className="dashboard">
       <div className="dashboard__top">
         <Recognition capture={capture} getNewSong={getNewSong} />
+        <Visualization
+          beatsData={beats[offset]}
+          playerPlaying={playerPlaying}
+        />
       </div>
       <div className="dashboard__bottom">
         <Player
@@ -111,6 +117,8 @@ const Dashboard = () => {
           requestNewToken={requestNewToken}
           toggleCapture={toggleCapture}
           getNewSong={getNewSong}
+          offset={offset}
+          setOffset={setOffset}
         />
       </div>
     </div>
