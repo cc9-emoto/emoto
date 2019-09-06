@@ -5,17 +5,6 @@ import "../styles/Webcam.scss";
 
 //The component which send image data to Azure to get info
 class Recognition extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      photo: "",
-      sendData: "",
-      responseFromAPI: {},
-      webCamData: "",
-      preview: ""
-    };
-  }
-  //submit to Azure API with params
   submitData = base64 => {
     axios
       .post("/azure", { base64, userID: "abcde" })

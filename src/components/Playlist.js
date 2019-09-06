@@ -6,7 +6,6 @@ const Item = ({ song, index }) => {
 };
 
 const Playlist = ({ playlist }) => {
-  console.log(playlist);
   const [songs, setSongs] = useState([
     {
       key: "1",
@@ -26,15 +25,16 @@ const Playlist = ({ playlist }) => {
     }
   ]);
 
-  // const getSongs = async () => {
-  //   console.log("test");
-  //   const response = await axios.post("/graphql", {
-  //     query: `
-  //     query{
-
-  //     }`
-  //   });
-  // };
+  const getSongs = async (value = 0.5) => {
+    console.log("test");
+    const response = await axios.post("/graphql", {
+      query: `
+      query{
+        matchingSong (value: ${value}) {
+          songId
+      }`
+    });
+  };
 
   return (
     <div>

@@ -15,16 +15,6 @@ class WebcamCapture extends React.Component {
     this.props.getCaptureImage(imageSrc);
   };
 
-  // timer = () => {
-  //   setInterval(() => {
-  //     this.capture();
-  //   }, 10000);
-  // };
-
-  // componentDidMount() {
-  //   this.timer();
-  // }
-
   render() {
     const videoConstraints = {
       width: 1280,
