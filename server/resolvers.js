@@ -51,8 +51,8 @@ const resolvers = {
         return {email: "", uid: ""};
       }
     },
-    resetAdded: async () => {
-      await Song.updateMany({added: true}, {added: false}).exec();
+    resetAdded: async (_, { userId }) => {
+      await Song.updateMany({userId, added: true}, {added: false}).exec();
       return true;
     },
   }

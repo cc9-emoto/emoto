@@ -27,9 +27,10 @@ const Dashboard = () => {
   }, []);
 
   const resetAdded = async () => {
+    const user = Cookies.get('emoto-id');
     const response = await axios.post('/graphql', {query: 
       `mutation {
-        resetAdded
+        resetAdded (userId: "${user}")
       }`
     })
     console.log(response.data.data.resetAdded)
@@ -37,7 +38,6 @@ const Dashboard = () => {
 
   const startingTwo = async () => {
     const user = Cookies.get('emoto-id');
-    console.log(user);
     const starting = []
     const response = await axios.post('/graphql', { query: `
       query {
