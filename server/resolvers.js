@@ -20,8 +20,9 @@ const resolvers = {
       await Song.updateOne({songId: song[0].songId}, {added: true})
       return song[0];
     },
-    startingTwo: async () => {
-      const response = await Song.find({ added: false}).limit(2).exec();
+    startingTwo: async (_, { userId }) => {
+      console.log(userId);
+      const response = await Song.find({ userId }).limit(2).exec();
       await Song.updateOne({songId: response[0].songId}, {added: true})
       await Song.updateOne({songId: response[1].songId}, {added: true})
       return response;

@@ -36,10 +36,12 @@ const Dashboard = () => {
   }
 
   const startingTwo = async () => {
+    const user = Cookies.get('emoto-id');
+    console.log(user);
     const starting = []
     const response = await axios.post('/graphql', { query: `
       query {
-        startingTwo {
+        startingTwo (userId: "${user}") {
           songId
         }
       }

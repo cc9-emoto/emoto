@@ -12,7 +12,7 @@ const typeDefs = gql`
   type Query {
     user(token: String): User
     matchingSong(value: Float): Song
-    startingTwo: [Song]
+    startingTwo(userId: String): [Song]
   }
 
   type Mutation {
