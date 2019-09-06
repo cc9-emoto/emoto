@@ -5,6 +5,7 @@ const axios = require("axios");
 const fs = require("fs");
 
 const app = express();
+app.use(express.json({ limit: "50mb" }));
 const { typeDefs } = require("./schema");
 const { resolvers } = require("./resolvers");
 const spotifyRouter = require("./spotifyRouter");
@@ -12,12 +13,11 @@ const spotifyRouter = require("./spotifyRouter");
 const server = new ApolloServer({ typeDefs, resolvers });
 server.applyMiddleware({ app });
 
-// app.use(express.json());
-app.use("/spotify", spotifyRouter, express.json());
+app.use("/spotify", spotifyRouter);
 app.listen({ port: PORT }, () =>
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 );
-app.use(express.json({ limit: "50mb" }));
+
 app.post("/azure", async (req, res) => {
   //create image file and read
   let result;
