@@ -17,8 +17,11 @@ const typeDefs = gql`
   type Mutation {
     createUser(email: String, password: String): User
     createSession(email: String, password: String): User
+    resetAdded: Boolean
   }
 
 `;
 
 module.exports = { typeDefs };
+
+// startingTwo: [Song]  

@@ -15,14 +15,15 @@ const resolvers = {
       const foundUser = await User.findOne({ uid }).exec();
       return { email: foundUser.email, uid, token };
     },
-    matchingSong: async (_, { value }) => {
-      const song = await Song.find({ added: false, emoIndex: { $lte: value } })
-        .sort({ ratio: -1 })
-        .limit(1)
-        .exec();
-      await Song.update({ songId: song[0].songId }, { added: true });
+    matchingSong: async(_, { value }) => {
+      const song = await Song.find({ added: false, emoIndex: { $lte: value }}).sort({ratio: -1}).limit(1).exec();
+      await Song.updateOne({songId: song[0].songId}, {added: true})
       return song[0];
-    }
+    },
+    // startingTwo: async () => {
+    //   const two = await Song.find({ added: false}).limit(2).exec();
+    //   return two;
+    // }
   },
   Mutation: {
     createUser: async (_, { email, password }) => {
@@ -57,7 +58,14 @@ const resolvers = {
       } else {
         return { email: "", uid: "" };
       }
-    }
+    },
+    resetAdded: async () => {
+      const songs = await Song.find({added: false}).exec();
+      console.log(songs.length)
+      const response = await Song.updateMany({added: true}, {added: false}).exec();
+      console.log(response);
+      return true;
+    },
   }
 };
 
