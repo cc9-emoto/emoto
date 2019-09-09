@@ -1,15 +1,11 @@
 .dashboard {
   height: 100vh;
   display: grid;
-  grid-template-rows: 1fr 75px;
+  grid-template-rows: 1fr 52px;
   background-color: #222;
 }
 .dashboard__top {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.dashboard__bottom {
-  border-top: 1px solid #222;
-  padding-top: 25px;
 }
