@@ -11,21 +11,21 @@ const { resolvers } = require("./resolvers");
 const spotifyRouter = require("./spotifyRouter");
 const { print } = require("graphql");
 
-// class BasicLogging {
-//   requestDidStart({ queryString, parsedQuery, variables }) {
-//     const query = queryString || print(parsedQuery);
-//     console.log(query);
-//     console.log(variables);
-//   }
+class BasicLogging {
+  requestDidStart({ queryString, parsedQuery, variables }) {
+    const query = queryString || print(parsedQuery);
+    console.log(query);
+    console.log(variables);
+  }
 
-//   willSendResponse({ graphqlResponse }) {
-//     console.log(JSON.stringify(graphqlResponse, null, 2));
-//   }
-// }
+  willSendResponse({ graphqlResponse }) {
+    console.log(JSON.stringify(graphqlResponse, null, 2));
+  }
+}
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
   // formatError: error => {
   //   console.log(error);
   //   return error;
@@ -33,7 +33,7 @@ const server = new ApolloServer({
   // formatResponse: response => {
   //   console.log(response);
   //   return response;
-  // }
+  // },
   // extensions: [() => new BasicLogging()]
 });
 server.applyMiddleware({ app });

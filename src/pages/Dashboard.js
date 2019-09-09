@@ -85,11 +85,11 @@ const Dashboard = () => {
     setToken(response.data);
   };
 
-  const getNewSong = async (value = 0.5) => {
+  const getNewSong = async (value = 0.5, token, uid) => {
     const response = await axios.post("/graphql", {
       query: `
       query {
-        matchingSong (value: ${value}) {
+        matchingSong (value: ${value}, token: "${token}", uid: "${uid}") {
         songId
         }
       }
@@ -100,6 +100,7 @@ const Dashboard = () => {
     pushToPlaylist(`spotify:track:${newSongId}`);
     getBeats(newSongId);
   };
+
 
   const getBeats = async songId => {
     console.log("getBeats");
@@ -120,7 +121,7 @@ const Dashboard = () => {
           beatsData={beats[offset]}
           playerPlaying={playerPlaying}
         /> */}
-        <Animation beatsData={beats[offset] loudnessData={loudness[offset]} playerPlaying={playerPlaying} />
+        {/* <Animation beatsData={beats[offset]} loudnessData={loudness[offset]} playerPlaying={playerPlaying} /> */}
       </div>
       <div className="dashboard__bottom">
         <Player
