@@ -94,11 +94,9 @@ spotifyRouter.get("/callback", (req, res) => {
 });
 
 const songList = async (spotifyId, trackIdList) => {
-  console.log(trackIdList)
   const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(
     trackIdList
   );
-  console.log(musicFeatures)
   for (const song of musicFeatures.body["audio_features"]) {
     const { valence, mode, energy, id } = song;
     try {
@@ -109,7 +107,7 @@ const songList = async (spotifyId, trackIdList) => {
       });
       newSong.save();
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
     }
   }
 }
