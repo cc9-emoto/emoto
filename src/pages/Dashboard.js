@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import Visualization from "../components/Visualization";
+import Visualization3 from "../components/Visualization3";
 import Recognition from "../components/Recognition";
 import Player from "../components/Player";
 import "../styles/Dashboard.scss";
@@ -10,7 +10,7 @@ import "../styles/Dashboard.scss";
 const Dashboard = () => {
   const [token, setToken] = useState("");
   const [offset, setOffset] = useState(0);
-  const [playerPlaying, setPlayerPlaying] = useState(false);
+  const [playerPlaying, setPlayerPlaying] = useState(true);
   const [emotionValue, setEmotionValue] = useState(0.5);
 
   const [beats, setBeats] = useState([]);
@@ -109,7 +109,7 @@ const Dashboard = () => {
           getNewSong={getNewSong} 
           setEmotionValue={setEmotionValue}
         />
-        <Visualization
+        <Visualization3
           emotionValue={emotionValue}
           beatsData={beats[offset]}
           playerPlaying={playerPlaying}
