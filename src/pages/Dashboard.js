@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Visualization from "../components/Visualization";
+import Animation from "../components/Animation";
 import Recognition from "../components/Recognition";
 import Player from "../components/Player";
 import "../styles/Dashboard.scss";
@@ -15,6 +16,11 @@ const Dashboard = () => {
   const [beats, setBeats] = useState([]);
   const pushToBeats = newBeats => {
     setBeats(prevState => [...prevState, newBeats]);
+  };
+
+  const [loudness, setLoudness] = useState([]);
+  const pushToLoudness = newLoudness => {
+    setLoudness(prevState => [...prevState, newLoudness]);
   };
 
   const [playlist, setPlaylist] = useState([]);
@@ -39,6 +45,11 @@ const Dashboard = () => {
       setPlayerPlaying(true);
   }, [playlist, beats]);
 
+  useEffect(() => {
+    if (playlist.length === loudness.length && loudness.length > 0)
+      setPlayerPlaying(true); // what is this?
+  }, [playlist, loudness]);
+
   const resetAdded = async () => {
     const user = Cookies.get("emoto-id");
     const response = await axios.post("/graphql", {
@@ -60,7 +71,7 @@ const Dashboard = () => {
       }
     `
     });
-    for (let item of response.data.data.startingTwo) {
+    for (const item of response.data.data.startingTwo) {
       starting.push(`spotify:track:${item.songId}`);
       getBeats(item.songId);
     }
@@ -98,16 +109,18 @@ const Dashboard = () => {
       accessToken
     });
     pushToBeats(response.data.beats);
+    pushToLoudness(response.data.sections.loudness);
   };
 
   return (
     <div className="dashboard">
       <div className="dashboard__top">
         <Recognition capture={capture} getNewSong={getNewSong} />
-        <Visualization
+        {/* <Visualization
           beatsData={beats[offset]}
           playerPlaying={playerPlaying}
-        />
+        /> */}
+        <Animation beatsData={beats[offset] loudnessData={loudness[offset]} playerPlaying={playerPlaying} />
       </div>
       <div className="dashboard__bottom">
         <Player
