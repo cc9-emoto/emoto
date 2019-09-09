@@ -11,6 +11,7 @@ const Dashboard = () => {
   const [token, setToken] = useState("");
   const [offset, setOffset] = useState(0);
   const [playerPlaying, setPlayerPlaying] = useState(false);
+  const [emotionValue, setEmotionValue] = useState(0.5);
 
   const [beats, setBeats] = useState([]);
   const pushToBeats = newBeats => {
@@ -41,7 +42,7 @@ const Dashboard = () => {
 
   const resetAdded = async () => {
     const user = Cookies.get("emoto-id");
-    const response = await axios.post("/graphql", {
+    await axios.post("/graphql", {
       query: `mutation {
         resetAdded (userId: "${user}")
       }`
@@ -103,8 +104,13 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="dashboard__top">
-        <Recognition capture={capture} getNewSong={getNewSong} />
+        <Recognition 
+          capture={capture} 
+          getNewSong={getNewSong} 
+          setEmotionValue={setEmotionValue}
+        />
         <Visualization
+          emotionValue={emotionValue}
           beatsData={beats[offset]}
           playerPlaying={playerPlaying}
         />

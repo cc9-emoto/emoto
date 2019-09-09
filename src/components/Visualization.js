@@ -14,11 +14,9 @@ const Visualization = ({ beatsData = [], playerPlaying }) => {
     time = 0;
     if (beatsData.length > 0 && time === 0 && playerPlaying) {
       startTicker();
-      console.log(time);
       const avgDuration =
         beatsData.reduce((acc, beat) => acc + beat.duration, 0) /
         beatsData.length;
-      console.log(`recalculate duration: ${avgDuration}`);
       setDuration(avgDuration * 1000);
     }
   }, [beatsData, playerPlaying]);
@@ -54,7 +52,6 @@ const Visualization = ({ beatsData = [], playerPlaying }) => {
     return array;
   };
 
-  console.log("render");
   return (
     <div className="visualization">
       <svg viewBox="0 0 100 55">{renderCircles()}</svg>

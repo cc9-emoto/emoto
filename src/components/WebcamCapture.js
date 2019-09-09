@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Webcam from "react-webcam";
 
 //The component to get base64 data through webcam
@@ -30,8 +30,8 @@ class WebcamCapture extends React.Component {
 
   render() {
     const videoConstraints = {
-      width: 1280,
-      height: 720,
+      width: 450,
+      height: 250,
       facingMode: "user"
     };
 
@@ -39,10 +39,8 @@ class WebcamCapture extends React.Component {
       <div>
         <Webcam
           audio={false}
-          height={720}
           ref={this.setRef}
           screenshotFormat="image/jpeg"
-          width={1280}
           videoConstraints={videoConstraints}
         />
       </div>
