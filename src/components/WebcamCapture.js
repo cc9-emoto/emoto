@@ -11,13 +11,22 @@ class WebcamCapture extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.capture !== this.props.capture) this.capture();
+    if (prevProps.capture !== this.props.capture) this.songCapture();
   }
 
-  capture = () => {
+  componentDidMount = () => {
+    setInterval(() => this.emotionCapture(), 10000);
+  }
+
+  songCapture = () => {
     const imageSrc = this.webcam.getScreenshot();
-    this.props.getCaptureImage(imageSrc);
+    this.props.getSongFromCapture(imageSrc);
   };
+
+  emotionCapture = () => {
+    const imageSrc = this.webcam.getScreenshot();
+    this.props.getEmotionFromCapture(imageSrc);
+  }
 
   render() {
     const videoConstraints = {
