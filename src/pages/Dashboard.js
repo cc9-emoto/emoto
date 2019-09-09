@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import VisualizationToggle from '../components/VisualizationToggle';
+import Visualization from "../components/Visualization";
 import Visualization3 from "../components/Visualization3";
 import Recognition from "../components/Recognition";
 import Player from "../components/Player";
@@ -12,6 +14,8 @@ const Dashboard = () => {
   const [offset, setOffset] = useState(0);
   const [playerPlaying, setPlayerPlaying] = useState(true);
   const [emotionValue, setEmotionValue] = useState(0.5);
+
+  const [vis, setVis] = useState(2);
 
   const [beats, setBeats] = useState([]);
   const pushToBeats = newBeats => {
@@ -104,16 +108,30 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="dashboard__top">
+        <VisualizationToggle 
+          vis={vis}
+          setVis={setVis}
+        />
         <Recognition 
           capture={capture} 
           getNewSong={getNewSong} 
           setEmotionValue={setEmotionValue}
         />
-        <Visualization3
-          emotionValue={emotionValue}
-          beatsData={beats[offset]}
-          playerPlaying={playerPlaying}
-        />
+
+        { vis === 1 ? 
+          <Visualization
+            emotionValue={emotionValue}
+            beatsData={beats[offset]}
+            playerPlaying={playerPlaying}
+          />
+        :
+          <Visualization3
+            emotionValue={emotionValue}
+            beatsData={beats[offset]}
+            playerPlaying={playerPlaying}
+          />
+        }
+        
       </div>
       <div className="dashboard__bottom">
         <Player
