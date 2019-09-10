@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import THREE from "three.js";
 
 let scene, camera, renderer, sphere;
+let currentSection = 0;
 
 const loadSphere = () => {
   scene = new THREE.Scene();
@@ -36,6 +37,10 @@ const loadSphere = () => {
   renderer.render(scene, camera);
 };
 
+Set.prototype.getByIndex = function(index) {
+  return [...this][index];
+};
+
 class Animation extends Component {
   constructor(props) {
     super(props);
@@ -43,6 +48,7 @@ class Animation extends Component {
       sphereStatus: "decrease",
       clock: 0,
       beats: new Set(),
+      loudnessStart: new Set(),
       loudness: new Set()
     };
     this.animate = this.animate.bind(this);
@@ -52,23 +58,22 @@ class Animation extends Component {
     loadSphere();
   }
 
-  animate() {
-    console.log("animate");
-    const increase = () => {
-      sphere.scale.x += 0.1;
-      sphere.scale.y += 0.1;
-      sphere.scale.z += 0.1;
+  animate(loudnessStart, loudness) {
+    const increase = loudness => {
+      sphere.scale.x += loudness.getByIndex(currentSection);
+      sphere.scale.y += loudness.getByIndex(currentSection);
+      sphere.scale.z += loudness.getByIndex(currentSection);
     };
-    const decrease = () => {
-      sphere.scale.x -= 0.1;
-      sphere.scale.y -= 0.1;
-      sphere.scale.z -= 0.1;
+    const decrease = loudness => {
+      sphere.scale.x -= loudness.getByIndex(currentSection);
+      sphere.scale.y -= loudness.getByIndex(currentSection);
+      sphere.scale.z -= loudness.getByIndex(currentSection);
     };
     if (this.state.sphereStatus === "increase") {
-      increase();
+      increase(loudness);
       this.setState({ sphereStatus: "decrease" });
     } else {
-      decrease();
+      decrease(loudness);
       this.setState({ sphereStatus: "increase" });
     }
     renderer.render(scene, camera);
@@ -80,22 +85,43 @@ class Animation extends Component {
       this.props.beatsData.length > 0 &&
       prevProps.beatsData !== this.props.beatsData
     ) {
-      console.log("this.props.beatsData:", this.props.beatsData);
       this.startClock();
       this.setState({
         beats: new Set(
           this.props.beatsData.map(
             beat => Math.ceil((beat.start * 1000) / 100) * 100
           )
+        )
+      });
+    }
+    if (
+      this.props.loudnessData &&
+      this.props.loudnessData.length > 0 &&
+      prevProps.loudnessData !== this.props.loudnessData
+    ) {
+      this.setState({
+        loudnessStart: new Set(
+          this.props.loudnessData.map(
+            loudness => Math.ceil((loudness.start * 1000) / 100) * 100
+          )
         ),
-        loudness: new Set(this.props.beatsData)
+        loudness: new Set(
+          this.props.loudnessData.map(
+            loudness =>
+              Math.ceil((Math.abs(loudness.loudness) * 1000) / 100) / 100
+          )
+        )
       });
     }
     if (
       this.state.clock !== prevState.clock &&
       this.state.beats.has(this.state.clock)
     ) {
-      this.animate();
+      this.animate(this.state.loudnessStart, this.state.loudness);
+    }
+
+    if (this.state.loudnessStart.has(this.state.clock)) {
+      currentSection++;
     }
   }
 
@@ -109,7 +135,7 @@ class Animation extends Component {
     return (
       <>
         <button onClick={this.animate}>ANIMATE</button>
-        <div id="sphere"></div>;
+        <div id="sphere"></div>     
       </>
     );
   }
