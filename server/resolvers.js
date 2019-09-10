@@ -2,6 +2,7 @@ const db = require("../db/db.js");
 const bcrypt = require("bcryptjs");
 const uuid = require("uuid/v4");
 const jwt = require("jsonwebtoken");
+const axios = require("axios");
 
 const User = require("../db/User");
 const Session = require("../db/Session");
@@ -14,13 +15,13 @@ const resolvers = {
       const uid = session.user;
       const foundUser = await User.findOne({ uid }).exec();
       return { email: foundUser.email, uid, token };
-    },
-    matchingSong: async (_, { value }) => {
+    },  
+    matchingSong: async (_, { value, token, uid }) => {
       const songsBelow = await Song.find({
         added: false,
         emoIndex: { $lte: value }
       })
-        .sort({ ratio: -1 })
+        .sort({ ratio: -1 })  
         .limit(1)
         .exec();
       const songsAbove = await Song.find({
@@ -31,11 +32,17 @@ const resolvers = {
         .limit(1)
         .exec();
       const songs = [...songsAbove, ...songsBelow];
+      if (songs.length < 1) {
+        const songRef = await Song.findOne({ userId: uid}).exec()
+        const songId = songRef.songId
+        const response = await axios.post('/spotify/recommended', { songId, accessToken, spotifyId });
+        return response
+      } else {
       await Song.updateOne({ songId: songs[0].songId }, { added: true });
       return songs[0];
+      }
     },
     startingTwo: async (_, { userId }) => {
-      console.log(userId);
       const response = await Song.find({ userId })
         .limit(2)
         .exec();

@@ -73,7 +73,7 @@ const Dashboard = () => {
     });
     for (const item of response.data.data.startingTwo) {
       starting.push(`spotify:track:${item.songId}`);
-      getBeats(item.songId);
+      // getBeats(item.songId);
     }
     setPlaylist([...playlist, ...starting]);
   };
@@ -85,11 +85,11 @@ const Dashboard = () => {
     setToken(response.data);
   };
 
-  const getNewSong = async (value = 0.5) => {
+  const getNewSong = async (value = 0.5, token, uid) => {
     const response = await axios.post("/graphql", {
       query: `
       query {
-        matchingSong (value: ${value}) {
+        matchingSong (value: ${value}, token: "${token}", uid: "${uid}") {
         songId
         }
       }
@@ -98,8 +98,9 @@ const Dashboard = () => {
     const newSongId = response.data.data.matchingSong.songId;
     console.log(`Got a new song! ${newSongId}`);
     pushToPlaylist(`spotify:track:${newSongId}`);
-    getBeats(newSongId);
+    // getBeats(newSongId);
   };
+
 
   const getBeats = async songId => {
     const accessToken = Cookies.get("emoto-access");
@@ -119,11 +120,11 @@ const Dashboard = () => {
           beatsData={beats[offset]}
           playerPlaying={playerPlaying}
         /> */}
-        <Animation
+        {/* <Animation
           beatsData={beats[offset]}
           loudnessData={loudness[offset]}
           playerPlaying={playerPlaying}
-        />
+        /> */}
       </div>
       <div className="dashboard__bottom">
         <Player

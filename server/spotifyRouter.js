@@ -70,7 +70,7 @@ spotifyRouter.get("/callback", (req, res) => {
         });
         newUser.save();
 
-        const topTrackData = await spotifyApi.getMyTopTracks({ limit: 50 });
+        const topTrackData = await spotifyApi.getMyTopTracks({ limit: 3 });
         const trackIds = topTrackData.body.items.map(song => song.id);
         songList(newUser.spotifyId, trackIds)
       }
