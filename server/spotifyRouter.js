@@ -81,7 +81,7 @@ spotifyRouter.get("/callback", (req, res) => {
         res.cookie("emoto-id", userData.body["id"]);
         res.cookie("emoto-access", data.body["access_token"]);
         res.cookie("emoto-refresh", data.body["refresh_token"]);
-        res.redirect(`http://localhost:3000/onboarding`);
+        res.redirect(`http://localhost:3000/dashboard`);
       }
     },
     function(err) {

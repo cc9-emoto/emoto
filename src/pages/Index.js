@@ -1,10 +1,10 @@
 import React from 'react';
 import Login from '../components/Login'
+import '../styles/Index.scss'
 
 const Index = () => {
   return (
-    <div>
-      <h1>INDEX!</h1>
+    <div className="index">
       <Login />
     </div>
   )

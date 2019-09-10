@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import VisualizationToggle from '../components/VisualizationToggle';
 import Visualization from "../components/Visualization";
 import Animation from "../components/Animation";
+import Visualization3 from "../components/Visualization3";
 import Recognition from "../components/Recognition";
 import Player from "../components/Player";
 import "../styles/Dashboard.scss";
@@ -11,7 +13,10 @@ import "../styles/Dashboard.scss";
 const Dashboard = () => {
   const [token, setToken] = useState("");
   const [offset, setOffset] = useState(0);
-  const [playerPlaying, setPlayerPlaying] = useState(false);
+  const [playerPlaying, setPlayerPlaying] = useState(true);
+  const [emotionValue, setEmotionValue] = useState(0.5);
+
+  const [vis, setVis] = useState(2);
 
   const [beats, setBeats] = useState([]);
   const pushToBeats = newBeats => {
@@ -52,7 +57,7 @@ const Dashboard = () => {
 
   const resetAdded = async () => {
     const user = Cookies.get("emoto-id");
-    const response = await axios.post("/graphql", {
+    await axios.post("/graphql", {
       query: `mutation {
         resetAdded (userId: "${user}")
       }`
@@ -115,16 +120,36 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="dashboard__top">
-        <Recognition capture={capture} getNewSong={getNewSong} />
-        {/* <Visualization
-          beatsData={beats[offset]}
-          playerPlaying={playerPlaying}
-        /> */}
-        {/* <Animation
-          beatsData={beats[offset]}
-          loudnessData={loudness[offset]}
-          playerPlaying={playerPlaying}
-        /> */}
+        <VisualizationToggle 
+          vis={vis}
+          setVis={setVis}
+        />
+        <Recognition 
+          capture={capture} 
+          getNewSong={getNewSong} 
+          setEmotionValue={setEmotionValue}
+        />
+
+        { vis === 1 ? 
+          <Visualization
+            emotionValue={emotionValue}
+            beatsData={beats[offset]}
+            playerPlaying={playerPlaying}
+          />
+        : vis === 2 ?
+          <Visualization3
+            emotionValue={emotionValue}
+            beatsData={beats[offset]}
+            playerPlaying={playerPlaying}
+            />
+        : 
+          <Animation
+            beatsData={beats[offset]}
+            loudnessData={loudness[offset]}
+            playerPlaying={playerPlaying}
+          />
+        }
+        
       </div>
       <div className="dashboard__bottom">
         <Player

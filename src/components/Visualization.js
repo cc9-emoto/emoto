@@ -4,13 +4,14 @@ import anime from "animejs";
 import "../styles/Visualization.scss";
 
 const Visualization = ({ beatsData = [], playerPlaying }) => {
-  const [time, setTime] = useState(0);
+  let time = 0;
   const [duration, setDuration] = useState(200);
   const beats = new Set(
     beatsData.map(beat => Math.ceil((beat.start * 1000) / 100) * 100)
   );
 
   useEffect(() => {
+    time = 0;
     if (beatsData.length > 0 && time === 0 && playerPlaying) {
       startTicker();
       const avgDuration =
@@ -20,15 +21,13 @@ const Visualization = ({ beatsData = [], playerPlaying }) => {
     }
   }, [beatsData, playerPlaying]);
 
-  useEffect(() => {
-    if (beats.has(time)) {
-      animate();
-    }
-  }, [time, beats]);
-
   const startTicker = () => {
-    setInterval(() => setTime(prevState => prevState + 100), 100);
+    setInterval(() => {
+      time = time + 100
+      if (beats.has(time)) animate();
+    }, 100);
   };
+  
   const animate = () => {
     anime({
       targets: ".circle",
@@ -45,7 +44,7 @@ const Visualization = ({ beatsData = [], playerPlaying }) => {
     const array = [];
     for (let x = 0; x <= 120; x = x + 4) {
       for (let y = 0; y <= 100; y = y + 4) {
-        array.push(<circle className="circle" cx={x} cy={y} r="0.5" />);
+        array.push(<circle key={`${x},${y}`}className="circle" cx={x} cy={y} r="0.5" />);
       }
     }
     return array;
@@ -53,7 +52,6 @@ const Visualization = ({ beatsData = [], playerPlaying }) => {
 
   return (
     <div className="visualization">
-      {/* <div className="timer">{time}</div> */}
       <svg viewBox="0 0 100 55">{renderCircles()}</svg>
     </div>
   );

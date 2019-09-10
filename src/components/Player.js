@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+import React from "react";
 import SpotifyPlayer from "react-spotify-web-playback";
 import "../styles/Player.scss";
 
@@ -12,16 +12,12 @@ const Player = ({
   toggleCapture,
   playerPlaying
 }) => {
-  useEffect(() => {
-    requestNewToken();
-  }, []);
 
   const logCallback = state => {
     if (state.error === "Authentication failed") requestNewToken();
     switch (state.type) {
       case "track_update": {
         if (state.nextTracks.length === 0) {
-          const duration = state.track.durationMs;
           toggleCapture();
           setOffset(playlist.length - 1);
         }

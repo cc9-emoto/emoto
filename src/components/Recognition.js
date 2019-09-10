@@ -10,18 +10,24 @@ class Recognition extends Component {
     return response.data;
   };
 
-  getCaptureImage = async webCamData => {
+  getSongFromCapture = async webCamData => {
     const feelings = await this.submitData(webCamData);
     const token = Cookies.get("emoto-access");
     const uid = Cookies.get("emoto-id");
     this.props.getNewSong((feelings.happiness + 0.5 * feelings.neutral), token, uid);
   };
 
+  getEmotionFromCapture = async webCamData => {
+    const feelings = await this.submitData(webCamData);
+    this.props.setEmotionValue(feelings.happiness + 0.5 * feelings.neutral);
+  }
+
   render() {
     return (
       <div className="webcam__wrapper">
         <WebcamCapture
-          getCaptureImage={this.getCaptureImage}
+          getEmotionFromCapture={this.getEmotionFromCapture}
+          getSongFromCapture={this.getSongFromCapture}
           capture={this.props.capture}
         />
       </div>

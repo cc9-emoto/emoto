@@ -1,7 +1,7 @@
 .visualization {
   position: absolute;
-  height: calc(100vh - 80px);
-  width: calc(100vw - 10px);
+  height: calc(100vh - 52px);
+  width: calc(100vw);
   overflow: hidden;
 }
 .timer {
@@ -13,4 +13,7 @@
   color: white;
   font-size: 24px;
   outline: none;
+}
+.vis3 {
+  transform: scaleY(-1);
 }
