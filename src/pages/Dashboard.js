@@ -103,14 +103,13 @@ const Dashboard = () => {
 
 
   const getBeats = async songId => {
-    console.log("getBeats");
     const accessToken = Cookies.get("emoto-access");
     const response = await axios.post("/spotify/analyze", {
       songId,
       accessToken
     });
     pushToBeats(response.data.beats);
-    pushToLoudness(response.data.sections.loudness);
+    pushToLoudness(response.data.sections);
   };
 
   return (
@@ -121,7 +120,15 @@ const Dashboard = () => {
           beatsData={beats[offset]}
           playerPlaying={playerPlaying}
         /> */}
+<<<<<<< HEAD
         {/* <Animation beatsData={beats[offset]} loudnessData={loudness[offset]} playerPlaying={playerPlaying} /> */}
+=======
+        <Animation
+          beatsData={beats[offset]}
+          loudnessData={loudness[offset]}
+          playerPlaying={playerPlaying}
+        />
+>>>>>>> master
       </div>
       <div className="dashboard__bottom">
         <Player
