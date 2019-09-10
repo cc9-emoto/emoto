@@ -120,15 +120,11 @@ const Dashboard = () => {
           beatsData={beats[offset]}
           playerPlaying={playerPlaying}
         /> */}
-<<<<<<< HEAD
-        {/* <Animation beatsData={beats[offset]} loudnessData={loudness[offset]} playerPlaying={playerPlaying} /> */}
-=======
-        <Animation
+        {/* <Animation
           beatsData={beats[offset]}
           loudnessData={loudness[offset]}
           playerPlaying={playerPlaying}
-        />
->>>>>>> master
+        /> */}
       </div>
       <div className="dashboard__bottom">
         <Player

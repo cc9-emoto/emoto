@@ -8,12 +8,6 @@ const User = require("../db/User");
 const Session = require("../db/Session");
 const Song = require("../db/Song");
 
-// const moreSongs = async (songId, accessToken, spotifyId) => {
-//   const response = await axios.post('/recommended', { songId, accessToken, spotifyId });
-//   console.log(response)
-//   return response;
-// }
-
 const resolvers = {
   Query: {
     user: async (_, { token }) => {
@@ -38,14 +32,15 @@ const resolvers = {
         .limit(1)
         .exec();
       const songs = [...songsAbove, ...songsBelow];
-      // if (length < 2) {
-      //   moreSongs(songs[0].songId, token, uid)
-      //   return {songId: "ok"}
-      // } else {
-        await Song.updateOne({ songId: songs[0].songId }, { added: true });
-        console.log(songs[0]);
-        return songs[0];
-      // }
+      if (songs.length < 1) {
+        const songRef = await Song.findOne({ userId: uid}).exec()
+        const songId = songRef.songId
+        const response = await axios.post('/spotify/recommended', { songId, accessToken, spotifyId });
+        return response
+      } else {
+      await Song.updateOne({ songId: songs[0].songId }, { added: true });
+      return songs[0];
+      }
     },
     startingTwo: async (_, { userId }) => {
       const response = await Song.find({ userId })
