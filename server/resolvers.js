@@ -27,7 +27,7 @@ const resolvers = {
         added: false,
         emoIndex: { $lte: value }
       })
-        .sort({ ratio: -1 })
+        .sort({ ratio: -1 })  
         .limit(1)
         .exec();
       const songsAbove = await Song.find({

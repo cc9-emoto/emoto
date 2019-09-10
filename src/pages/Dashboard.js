@@ -73,7 +73,7 @@ const Dashboard = () => {
     });
     for (const item of response.data.data.startingTwo) {
       starting.push(`spotify:track:${item.songId}`);
-      getBeats(item.songId);
+      // getBeats(item.songId);
     }
     setPlaylist([...playlist, ...starting]);
   };
@@ -98,7 +98,7 @@ const Dashboard = () => {
     const newSongId = response.data.data.matchingSong.songId;
     console.log(`Got a new song! ${newSongId}`);
     pushToPlaylist(`spotify:track:${newSongId}`);
-    getBeats(newSongId);
+    // getBeats(newSongId);
   };
 
 
