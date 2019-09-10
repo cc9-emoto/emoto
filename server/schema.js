@@ -11,7 +11,7 @@ const typeDefs = gql`
 
   type Query {
     user(token: String): User
-    matchingSong(value: Float): Song
+    matchingSong(value: Float, token: String, uid: String): Song
     startingTwo(userId: String): [Song]
   }
 

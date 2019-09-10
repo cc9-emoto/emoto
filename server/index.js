@@ -26,15 +26,15 @@ class BasicLogging {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  formatError: error => {
-    console.log(error);
-    return error;
-  },
-  formatResponse: response => {
-    console.log(response);
-    return response;
-  },
-  extensions: [() => new BasicLogging()]
+  // formatError: error => {
+  //   console.log(error);
+  //   return error;
+  // },
+  // formatResponse: response => {
+  //   console.log(response);
+  //   return response;
+  // },
+  // extensions: [() => new BasicLogging()]
 });
 server.applyMiddleware({ app });
 
