@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import Visualization from "../components/Visualization";
 import Recognition from "../components/Recognition";
 import Player from "../components/Player";
+import Playlist from "../components/Playlist";
 import "../styles/Dashboard.scss";
 
 const Dashboard = () => {
@@ -100,6 +101,10 @@ const Dashboard = () => {
     pushToBeats(response.data.beats);
   };
 
+  const changeSongFromChild = index => {
+    setOffset(index);
+  };
+
   return (
     <div className="dashboard">
       <div className="dashboard__top">
@@ -108,6 +113,13 @@ const Dashboard = () => {
           beatsData={beats[offset]}
           playerPlaying={playerPlaying}
         />
+      </div>
+      <div className="dashboard__right">
+        <Playlist
+          changeSongFromChild={changeSongFromChild}
+          playlist={playlist}
+          offset={offset}
+        ></Playlist>
       </div>
       <div className="dashboard__bottom">
         <Player
