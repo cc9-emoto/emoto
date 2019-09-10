@@ -52,7 +52,7 @@ const Dashboard = () => {
 
   const resetAdded = async () => {
     const user = Cookies.get("emoto-id");
-    const response = await axios.post("/graphql", {
+    await axios.post("/graphql", {
       query: `mutation {
         resetAdded (userId: "${user}")
       }`

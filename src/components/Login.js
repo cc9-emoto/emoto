@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-import Recognition from "./Recognition";
+// import Recognition from "./Recognition";
 
 const Login = () => {
   const handleLogin = async () => {
