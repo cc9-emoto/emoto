@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors')
 const { ApolloServer } = require("apollo-server-express");
 const PORT = 4000;
 const axios = require("axios");
@@ -6,6 +7,8 @@ const fs = require("fs");
 
 const app = express();
 app.use(express.json({ limit: "50mb" }));
+app.use(cors())
+
 const { typeDefs } = require("./schema");
 const { resolvers } = require("./resolvers");
 const spotifyRouter = require("./spotifyRouter");

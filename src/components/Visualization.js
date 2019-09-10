@@ -24,9 +24,7 @@ const Visualization = ({ beatsData = [], playerPlaying }) => {
   const startTicker = () => {
     setInterval(() => {
       time = time + 100
-      if (beats.has(time)) {
-        animate();
-      }
+      if (beats.has(time)) animate();
     }, 100);
   };
   
