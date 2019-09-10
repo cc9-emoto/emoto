@@ -61,6 +61,7 @@ const Playlist = ({ playlist, offset, changeSongFromChild }) => {
                 offset={offset}
                 index={index}
                 changeSongFromChild={changeSongFromChild}
+                key={index}
               ></Item>
             ))
           : ""}
@@ -72,7 +73,7 @@ const Playlist = ({ playlist, offset, changeSongFromChild }) => {
             <li>{`Album : ${currentSong.album}`}</li>
             <li>{`Artist : ${currentSong.artist}`}</li>
           </ul>
-          <img src={currentSong.image} />
+          <img src={currentSong.image} alt="album" />
         </div>
       ) : (
         <p>Loading...</p>

@@ -1,4 +1,5 @@
 const express = require("express");
+const axios = require("axios");
 const spotifyRouter = express.Router();
 
 const db = require("../db/db.js");
@@ -34,6 +35,7 @@ spotifyRouter.post("/reauthorize", async (req, res) => {
   const { refreshToken } = req.body;
   spotifyApi.setRefreshToken(refreshToken);
   const response = await spotifyApi.refreshAccessToken();
+  // console.log(response);
   res.send(response.body["access_token"]);
 });
 
@@ -44,6 +46,7 @@ spotifyRouter.post("/analyze", async (req, res) => {
     const response = await spotifyApi.getAudioAnalysisForTrack(songId);
     res.send(response.body);
   } catch (err) {
+    console.log(err);
     res.status(500).send("Something broke!");
   }
 });
@@ -67,21 +70,9 @@ spotifyRouter.get("/callback", (req, res) => {
         });
         newUser.save();
 
-        const topTrackData = await spotifyApi.getMyTopTracks({ limit: 50 });
-        const topTrackIds = topTrackData.body.items.map(song => song.id);
-        const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(
-          topTrackIds
-        );
-
-        for (const song of musicFeatures.body["audio_features"]) {
-          const { valence, mode, energy, id } = song;
-          const newSong = await new Song({
-            userId: newUser.spotifyId,
-            songId: id,
-            emoIndex: calculateEmoIndex({ valence, mode, energy })
-          });
-          newSong.save();
-        }
+        const topTrackData = await spotifyApi.getMyTopTracks({ limit: 3 });
+        const trackIds = topTrackData.body.items.map(song => song.id);
+        songList(newUser.spotifyId, trackIds);
       }
 
       if (!authorizationCode) {
@@ -102,10 +93,46 @@ spotifyRouter.get("/callback", (req, res) => {
   );
 });
 
-spotifyRouter.post("/track", (req, res) => {
-  const songId = req.body.songId.split(":")[2];
-  spotifyApi.getTrack(songId).then(data => res.send(data.body));
-  process.on("unhandledRejection", console.dir);
+spotifyRouter.post("/track", async (req, res) => {
+  try {
+    const songId = await req.body.songId.split(":")[2];
+    spotifyApi.getTrack(songId).then(data => res.send(data.body));
+    process.on("unhandledRejection", console.dir);
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+
+const songList = async (spotifyId, trackIdList) => {
+  const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(trackIdList);
+  for (const song of musicFeatures.body["audio_features"]) {
+    const { valence, mode, energy, id } = song;
+    try {
+      const newSong = await new Song({
+        userId: spotifyId,
+        songId: id,
+        emoIndex: calculateEmoIndex({ valence, mode, energy })
+      });
+      newSong.save();
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+};
+
+spotifyRouter.post("/recommended", async (req, res) => {
+  const { songId, accessToken, spotifyId } = req.body;
+  spotifyApi.setAccessToken(accessToken);
+  try {
+    const response = await spotifyApi.getRecommendations({
+      seed_tracks: songId
+    });
+    const trackIdList = response.body.tracks.map(song => song.id);
+    songList(spotifyId, trackIdList);
+    res.send(response.body.tracks);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 module.exports = spotifyRouter;

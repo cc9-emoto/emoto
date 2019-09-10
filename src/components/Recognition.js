@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import WebcamCapture from "./WebcamCapture";
+import Cookies from "js-cookie";
 import "../styles/Webcam.scss";
 
 class Recognition extends Component {
@@ -14,7 +15,13 @@ class Recognition extends Component {
 
   getCaptureImage = async webCamData => {
     const feelings = await this.submitData(webCamData);
-    this.props.getNewSong(feelings.happiness + 0.5 * feelings.neutral);
+    const token = Cookies.get("emoto-access");
+    const uid = Cookies.get("emoto-id");
+    this.props.getNewSong(
+      feelings.happiness + 0.5 * feelings.neutral,
+      token,
+      uid
+    );
   };
 
   render() {
