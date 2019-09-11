@@ -9,3 +9,13 @@
   align-items: center;
   justify-content: center;
 }
+.dashboard__emotionValue {
+  padding: 10px 25px;
+  background-color: black;
+  color: white;
+  position: absolute;
+  top: 75px;
+  left: 25px;
+  border-radius: 10px;
+  z-index: 3;
+}

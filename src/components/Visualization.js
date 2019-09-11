@@ -1,11 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import anime from "animejs";
+import colorHelper from '../helpers/colorHelper'
 import "../styles/Visualization.scss";
 
-const Visualization = ({ beatsData = [], playerPlaying }) => {
+const Visualization = ({ beatsData = [], playerPlaying, emotionValue }) => {
   let time = 0;
   const [duration, setDuration] = useState(200);
+  const [hexValue, setHexValue] = useState("#000000")
   const beats = new Set(
     beatsData.map(beat => Math.ceil((beat.start * 1000) / 100) * 100)
   );
@@ -27,6 +29,11 @@ const Visualization = ({ beatsData = [], playerPlaying }) => {
       if (beats.has(time)) animate();
     }, 100);
   };
+
+  useEffect(() => {
+    const nextHex = colorHelper.getHexFromEmotion(emotionValue)
+    setHexValue(nextHex);
+  }, [emotionValue])
   
   const animate = () => {
     anime({
@@ -44,7 +51,7 @@ const Visualization = ({ beatsData = [], playerPlaying }) => {
     const array = [];
     for (let x = 0; x <= 120; x = x + 4) {
       for (let y = 0; y <= 100; y = y + 4) {
-        array.push(<circle key={`${x},${y}`}className="circle" cx={x} cy={y} r="0.5" />);
+        array.push(<circle key={`${x},${y}`}className="circle" cx={x} cy={y} r="0.5" fill={`#${hexValue}`}/>);
       }
     }
     return array;
