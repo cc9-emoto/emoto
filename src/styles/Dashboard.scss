@@ -1,7 +1,7 @@
 .dashboard {
   height: 100vh;
   display: grid;
-  grid-template-rows: 1fr 75px;
+  grid-template-rows: 1fr 52px;
   background-color: #222;
 }
 .dashboard__top {
@@ -9,7 +9,19 @@
   align-items: center;
   justify-content: center;
 }
-.dashboard__bottom {
-  border-top: 1px solid #222;
-  padding-top: 25px;
+.dashboard__emotionValue {
+  padding: 10px 25px;
+  background-color: black;
+  color: white;
+  position: absolute;
+  top: 75px;
+  left: 25px;
+  border-radius: 10px;
+  z-index: 3;
+}
+.dashboard__right {
+  position: absolute;
+  right: 0px;
+  width: 20%;
+  height: 93%;
 }

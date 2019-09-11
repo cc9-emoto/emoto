@@ -1,5 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+<<<<<<< HEAD
 import React, { useEffect } from "react";
+=======
+import React from "react";
+>>>>>>> master
 import SpotifyPlayer from "react-spotify-web-playback";
 import "../styles/Player.scss";
 
@@ -12,9 +16,6 @@ const Player = ({
   toggleCapture,
   playerPlaying
 }) => {
-  useEffect(() => {
-    requestNewToken();
-  }, []);
 
   const logCallback = state => {
     if (state.error === "Authentication failed") requestNewToken();
