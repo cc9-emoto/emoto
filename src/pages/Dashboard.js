@@ -123,18 +123,6 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="dashboard__top">
-<<<<<<< HEAD
-        <Recognition capture={capture} getNewSong={getNewSong} />
-        <Visualization
-          beatsData={beats[offset]}
-          playerPlaying={playerPlaying}
-        />
-        {/* <Animation
-          beatsData={beats[offset]}
-          loudnessData={loudness[offset]}
-          playerPlaying={playerPlaying}
-        /> */}
-=======
         <VisualizationToggle 
           vis={vis}
           setVis={setVis}
@@ -175,7 +163,6 @@ const Dashboard = () => {
           playlist={playlist}
           offset={offset}
         ></Playlist>
->>>>>>> master
       </div>
       <div className="dashboard__bottom">
         <Player

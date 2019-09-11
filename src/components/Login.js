@@ -1,10 +1,6 @@
 import React from "react";
 import axios from "axios";
-<<<<<<< HEAD
-// import Recognition from "./Recognition";
-=======
 import spotifyLogo from '../assets/images/spotifyLogo.png'
->>>>>>> master
 
 const Login = () => {
   const handleLogin = async () => {
@@ -15,7 +11,7 @@ const Login = () => {
   return (
     <div className="login">
       <button onClick={handleLogin}>
-        <img src={spotifyLogo} />
+        <img src={spotifyLogo} alt="Spotify Logo"/>
         Login with Spotify
       </button>
     </div>
