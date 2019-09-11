@@ -6,6 +6,7 @@ import Visualization from "../components/Visualization";
 import Animation from "../components/Animation";
 import Recognition from "../components/Recognition";
 import Player from "../components/Player";
+import Playlist from "../components/Playlist";
 import "../styles/Dashboard.scss";
 
 const Dashboard = () => {
@@ -101,7 +102,6 @@ const Dashboard = () => {
     // getBeats(newSongId);
   };
 
-
   const getBeats = async songId => {
     const accessToken = Cookies.get("emoto-access");
     const response = await axios.post("/spotify/analyze", {
@@ -110,6 +110,10 @@ const Dashboard = () => {
     });
     pushToBeats(response.data.beats);
     pushToLoudness(response.data.sections);
+  };
+
+  const changeSongFromChild = index => {
+    setOffset(index);
   };
 
   return (
@@ -125,6 +129,13 @@ const Dashboard = () => {
           loudnessData={loudness[offset]}
           playerPlaying={playerPlaying}
         /> */}
+      </div>
+      <div className="dashboard__right">
+        <Playlist
+          changeSongFromChild={changeSongFromChild}
+          playlist={playlist}
+          offset={offset}
+        ></Playlist>
       </div>
       <div className="dashboard__bottom">
         <Player

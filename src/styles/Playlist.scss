@@ -1,0 +1,68 @@
+.playlist__container {
+  height: 100%;
+}
+
+.playlist__restSongsContainer {
+  overflow: scroll;
+  height: 47%;
+  padding: 5px;
+  width: 100%;
+}
+
+.playlist__currentSongContainer {
+  position: absolute;
+  bottom: 0px;
+  margin: 5px 5px 0px 5px;
+  opacity: 1;
+  border: solid 3px white;
+  height: 50%;
+  width: 95%;
+}
+
+.playlist__currentSongItem {
+  margin: 10px;
+}
+
+.playlist__currentSongItem > li {
+  color: whitesmoke;
+  margin: 5px 5px;
+  padding-left: 10px;
+  text-align: left;
+  font-family: "alternate gothic";
+}
+
+.playlist__restSongs {
+  display: flex;
+  flex-direction: column;
+  padding-left: 10px;
+  margin: 10px 5px;
+  opacity: 1;
+}
+
+.playlist__restSongs > button {
+  margin: 0 0 10px 10px;
+  width: 85%;
+}
+
+.playlist__restSongsItem > li {
+  margin: 5px 10px;
+  text-align: left;
+  font-family: "alternate gothic";
+  color: whitesmoke;
+}
+
+.playlist__currentSongContainer > img {
+  display: block;
+  position: absolute;
+  bottom: 5px;
+  right: 10%;
+  width: 80%;
+  height: 60%;
+}
+
+p {
+  font-size: 30px;
+  text-align: center;
+  color: white;
+  font-family: "alternate gothic";
+}
