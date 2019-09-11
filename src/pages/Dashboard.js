@@ -122,20 +122,17 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      <div className="dashboard__top">
+      <div className="dashboard__left">
         <VisualizationToggle 
           vis={vis}
           setVis={setVis}
         />
-
         <div className="dashboard__emotionValue">{ emotionValue }</div>
-
         <Recognition 
           capture={capture} 
           getNewSong={getNewSong} 
           setEmotionValue={setEmotionValue}
         />
-
         { vis === 1 ? 
           <Visualization
             emotionValue={emotionValue}
@@ -155,15 +152,16 @@ const Dashboard = () => {
             playerPlaying={playerPlaying}
           />
         }
-        
       </div>
+
       <div className="dashboard__right">
         <Playlist
           changeSongFromChild={changeSongFromChild}
           playlist={playlist}
           offset={offset}
-        ></Playlist>
+        />
       </div>
+
       <div className="dashboard__bottom">
         <Player
           playerPlaying={playerPlaying}

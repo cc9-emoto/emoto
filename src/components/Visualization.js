@@ -59,7 +59,7 @@ const Visualization = ({ beatsData = [], playerPlaying, emotionValue }) => {
 
   return (
     <div className="visualization">
-      <svg viewBox="0 0 100 55">{renderCircles()}</svg>
+      <svg viewBox="0 0 100 60">{renderCircles()}</svg>
     </div>
   );
 };

@@ -50,7 +50,7 @@ const Visualization3 = ({ beatsData = [], playerPlaying, emotionValue }) => {
 
   return (
     <div className="visualization">
-      <svg className="vis3" viewBox="0 0 100 55">
+      <svg className="vis3" viewBox="0 0 100 60">
         { renderRectangles() }
       </svg>
     </div>

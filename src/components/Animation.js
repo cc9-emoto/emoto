@@ -1,22 +1,26 @@
 import React, { Component } from "react";
 import THREE from "three.js";
+import '../styles/Visualization.scss'
 
 let scene, camera, renderer, sphere;
 let currentSection = 0;
 
 const loadSphere = () => {
+  const container = document.querySelector(".visualization");
   scene = new THREE.Scene();
+
 
   camera = new THREE.PerspectiveCamera(
     50,
-    window.innerWidth / window.innerHeight,
+    container.scrollWidth / container.scrollHeight,
     0.1,
     1000
   );
   camera.position.z = 15;
 
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  
+  renderer.setSize(container.scrollWidth, container.scrollHeight);
 
   let sphereContainer = document.querySelector("#sphere");
   sphereContainer.appendChild(renderer.domElement);
@@ -45,7 +49,7 @@ class Animation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sphereStatus: "decrease",
+      sphereStatus: "increase",
       clock: 0,
       beats: new Set(),
       loudnessStart: new Set(),
@@ -133,10 +137,9 @@ class Animation extends Component {
 
   render() {
     return (
-      <>
-        <button onClick={this.animate}>ANIMATE</button>
-        <div id="sphere"></div>     
-      </>
+      <div className = "visualization">
+        <div id="sphere" />
+      </div>
     );
   }
 }
