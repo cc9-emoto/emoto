@@ -72,7 +72,7 @@ spotifyRouter.get("/callback", (req, res) => {
 
         const topTrackData = await spotifyApi.getMyTopTracks({ limit: 3 });
         const trackIds = topTrackData.body.items.map(song => song.id);
-        songList(newUser.spotifyId, trackIds)
+        songList(newUser.spotifyId, trackIds);
       }
 
       if (!authorizationCode) {
@@ -93,10 +93,18 @@ spotifyRouter.get("/callback", (req, res) => {
   );
 });
 
+spotifyRouter.post("/track", async (req, res) => {
+  try {
+    const songId = await req.body.songId.split(":")[2];
+    spotifyApi.getTrack(songId).then(data => res.send(data.body));
+    process.on("unhandledRejection", console.dir);
+  } catch (err) {
+    console.log(err.message);
+  }
+});
+
 const songList = async (spotifyId, trackIdList) => {
-  const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(
-    trackIdList
-  );
+  const musicFeatures = await spotifyApi.getAudioFeaturesForTracks(trackIdList);
   for (const song of musicFeatures.body["audio_features"]) {
     const { valence, mode, energy, id } = song;
     try {
@@ -110,16 +118,18 @@ const songList = async (spotifyId, trackIdList) => {
       console.log(err.message);
     }
   }
-}
+};
 
 spotifyRouter.post("/recommended", async (req, res) => {
   const { songId, accessToken, spotifyId } = req.body;
   spotifyApi.setAccessToken(accessToken);
   try {
-    const response = await spotifyApi.getRecommendations({ seed_tracks: songId });
-    const trackIdList = response.body.tracks.map(song => song.id)
+    const response = await spotifyApi.getRecommendations({
+      seed_tracks: songId
+    });
+    const trackIdList = response.body.tracks.map(song => song.id);
     songList(spotifyId, trackIdList);
-    res.send(response.body.tracks)
+    res.send(response.body.tracks);
   } catch (err) {
     res.status(500).send(err.message);
   }
